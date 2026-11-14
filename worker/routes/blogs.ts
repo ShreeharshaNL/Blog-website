@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { Env, HonoVariables } from '../types';
 import { requireAuth } from '../auth';
 import { isBot, generateViewerHash } from '../antiAbuse';
+import { handleBookmarkToggle } from './bookmarks';
 import {
   getRewardConfig,
   awardPoints,
@@ -710,5 +711,8 @@ blogsApp.get('/:id/revisions', async (c) => {
 
   return c.json({ revisions: results });
 });
+
+// Bookmark toggle alias
+blogsApp.post('/:id/bookmark', handleBookmarkToggle);
 
 export default blogsApp;

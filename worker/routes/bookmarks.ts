@@ -49,7 +49,7 @@ bookmarksApp.get('/', async (c) => {
 });
 
 // POST /api/bookmarks/:id/toggle - Toggle bookmark
-async function handleBookmarkToggle(c: any) {
+export async function handleBookmarkToggle(c: any) {
   const user = requireAuth(c);
   const blogId = c.req.param('id');
 
