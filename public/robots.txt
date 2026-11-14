@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /write/
+
+Sitemap: https://blog.shreeharsha.online/sitemap.xml
