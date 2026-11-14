@@ -10,10 +10,10 @@ export const Footer: React.FC = () => {
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 p-0.5">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-600 via-amber-500 to-amber-300 p-0.5 shadow-sm">
                 <img src="/logo.svg" alt="INKVERSE" className="w-full h-full rounded-[10px]" />
               </div>
-              <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent">
+              <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 dark:from-amber-200 dark:via-orange-300 dark:to-amber-500 bg-clip-text text-transparent">
                 INKVERSE
               </span>
             </Link>
@@ -33,22 +33,22 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2.5 text-sm text-foreground-muted">
               <li>
-                <Link to="/explore" className="hover:text-purple-400 transition-colors">
+                <Link to="/explore" className="hover:text-primary transition-colors">
                   Featured Stories
                 </Link>
               </li>
               <li>
-                <Link to="/categories" className="hover:text-purple-400 transition-colors">
+                <Link to="/categories" className="hover:text-primary transition-colors">
                   Topics &amp; Categories
                 </Link>
               </li>
               <li>
-                <Link to="/leaderboard" className="hover:text-purple-400 transition-colors">
+                <Link to="/leaderboard" className="hover:text-primary transition-colors">
                   Creator Leaderboard
                 </Link>
               </li>
               <li>
-                <Link to="/write" className="hover:text-purple-400 transition-colors">
+                <Link to="/write" className="hover:text-primary transition-colors">
                   Start Writing
                 </Link>
               </li>
@@ -62,8 +62,8 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2.5 text-sm text-foreground-muted">
               <li>
-                <Link to="/leaderboard" className="hover:text-purple-400 transition-colors flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                <Link to="/leaderboard" className="hover:text-primary transition-colors flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                   <span>Rewards Rules</span>
                 </Link>
               </li>

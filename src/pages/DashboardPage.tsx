@@ -93,7 +93,7 @@ export const DashboardPage: React.FC = () => {
         <p className="text-sm text-foreground-muted mb-6">
           Sign in to access your author analytics, stories manager, and reputation metrics.
         </p>
-        <Link to="/" className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-purple-600 text-white">
+        <Link to="/" className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white">
           Return Home
         </Link>
       </div>
@@ -125,15 +125,15 @@ export const DashboardPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <Link
             to="/dashboard/points"
-            className="px-4 py-2 rounded-xl text-xs font-semibold border border-purple-500/40 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 transition-colors flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl text-xs font-semibold border border-orange-500/40 bg-orange-500/10 text-orange-600 dark:text-orange-300 hover:bg-orange-500/20 transition-colors flex items-center gap-1.5"
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             <span>Points Ledger ({user.points} pts)</span>
           </Link>
 
           <Link
             to="/write"
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-900/30 transition-all flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white shadow-md shadow-orange-900/30 transition-all flex items-center gap-1.5"
           >
             <PenTool className="w-3.5 h-3.5" />
             <span>New Story</span>
@@ -148,7 +148,7 @@ export const DashboardPage: React.FC = () => {
           <div className="p-4 rounded-2xl border border-border bg-background-surface">
             <div className="flex items-center justify-between text-foreground-subtle mb-2">
               <span className="text-xs font-semibold uppercase tracking-wider">Stories</span>
-              <PenTool className="w-4 h-4 text-purple-400" />
+              <PenTool className="w-4 h-4 text-primary" />
             </div>
             <p className="font-serif text-2xl font-bold text-foreground">
               {analytics.overview.total_blogs}
@@ -205,15 +205,15 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Reputation Points */}
-          <div className="p-4 rounded-2xl border border-purple-500/30 bg-purple-500/10">
-            <div className="flex items-center justify-between text-purple-300 mb-2">
+          <div className="p-4 rounded-2xl border border-orange-500/30 bg-orange-500/10">
+            <div className="flex items-center justify-between text-orange-600 dark:text-orange-300 mb-2">
               <span className="text-xs font-semibold uppercase tracking-wider">Points</span>
-              <Sparkles className="w-4 h-4 text-purple-400" />
+              <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400" />
             </div>
-            <p className="font-serif text-2xl font-bold text-purple-300">
+            <p className="font-serif text-2xl font-bold text-orange-600 dark:text-orange-300">
               {analytics.overview.total_points}
             </p>
-            <p className="text-[11px] text-purple-300/80 mt-1 font-mono">
+            <p className="text-[11px] text-orange-600/80 dark:text-orange-300/80 mt-1 font-mono">
               Level {analytics.overview.level} {levelInfo?.name}
             </p>
           </div>
@@ -227,7 +227,7 @@ export const DashboardPage: React.FC = () => {
             <span className="flex items-center gap-2">
               <span>Current Tier: <strong>Level {levelInfo.level} ({levelInfo.name})</strong></span>
             </span>
-            <span className="font-mono text-purple-400">
+            <span className="font-mono text-amber-500 dark:text-amber-400">
               {levelInfo.nextPoints
                 ? `${user.points} / ${levelInfo.nextPoints} pts (${levelInfo.progressPercent}%)`
                 : 'Max Level Legend reached!'}
@@ -235,7 +235,7 @@ export const DashboardPage: React.FC = () => {
           </div>
           <div className="w-full h-2.5 rounded-full bg-background-elevated overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-500 rounded-full"
+              className="h-full bg-gradient-to-r from-amber-400 via-orange-500 to-rose-600 transition-all duration-500 rounded-full"
               style={{ width: `${levelInfo.progressPercent}%` }}
             />
           </div>
@@ -246,7 +246,7 @@ export const DashboardPage: React.FC = () => {
       <section className="p-6 rounded-2xl border border-border bg-background-surface space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            <div className="p-2 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
               <Lock className="w-5 h-5" />
             </div>
             <div>
@@ -265,7 +265,7 @@ export const DashboardPage: React.FC = () => {
             <button
               onClick={handleToggleDislikeSetting}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-                showDislikeStats ? 'bg-purple-600' : 'bg-background-elevated border border-border'
+                showDislikeStats ? 'bg-primary' : 'bg-background-elevated border border-border'
               }`}
             >
               <span
@@ -283,7 +283,7 @@ export const DashboardPage: React.FC = () => {
             <div className="p-4 rounded-xl bg-background-elevated/40 border border-border">
               <div className="flex items-center justify-between text-xs text-foreground-subtle mb-1">
                 <span>Total Dislikes Received</span>
-                <ThumbsDown className="w-4 h-4 text-purple-400" />
+                <ThumbsDown className="w-4 h-4 text-primary" />
               </div>
               <p className="font-mono text-2xl font-bold text-foreground">
                 {analytics?.overview.private_dislike_count ?? 0}
@@ -291,8 +291,8 @@ export const DashboardPage: React.FC = () => {
               <p className="text-[11px] text-foreground-subtle mt-1">Across all published stories</p>
             </div>
 
-            <div className="sm:col-span-2 p-4 rounded-xl bg-purple-950/20 border border-purple-500/30 flex items-start gap-3 text-xs text-foreground-muted">
-              <AlertCircle className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+            <div className="sm:col-span-2 p-4 rounded-xl bg-orange-950/20 border border-orange-500/30 flex items-start gap-3 text-xs text-foreground-muted">
+              <AlertCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-foreground mb-1">Privacy Guarantee:</p>
                 <p className="leading-relaxed">
@@ -327,7 +327,7 @@ export const DashboardPage: React.FC = () => {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                   activeTab === tab.id
-                    ? 'bg-purple-600 text-white'
+                    ? 'bg-primary text-white'
                     : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
                 }`}
               >
@@ -346,7 +346,7 @@ export const DashboardPage: React.FC = () => {
             </p>
             <Link
               to="/write"
-              className="px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white"
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white"
             >
               Start Writing
             </Link>
@@ -362,7 +362,7 @@ export const DashboardPage: React.FC = () => {
                     <th className="py-3 px-4 sm:px-6 text-center">Views</th>
                     <th className="py-3 px-4 sm:px-6 text-center">Likes</th>
                     {showDislikeStats && (
-                      <th className="py-3 px-4 sm:px-6 text-center text-purple-400">Private Dislikes</th>
+                      <th className="py-3 px-4 sm:px-6 text-center text-primary">Private Dislikes</th>
                     )}
                     <th className="py-3 px-4 sm:px-6">Date</th>
                     <th className="py-3 px-4 sm:px-6 text-right">Actions</th>
@@ -374,7 +374,7 @@ export const DashboardPage: React.FC = () => {
                       <td className="py-3.5 px-4 sm:px-6 max-w-xs">
                         <Link
                           to={b.status === 'published' ? `/blog/${b.slug}` : `/write/${b.id}`}
-                          className="font-semibold text-foreground hover:text-purple-400 transition-colors line-clamp-1"
+                          className="font-semibold text-foreground hover:text-primary transition-colors line-clamp-1"
                         >
                           {b.title}
                         </Link>
@@ -388,7 +388,7 @@ export const DashboardPage: React.FC = () => {
                               ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                               : b.status === 'draft'
                               ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                              : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+                              : 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20'
                           }`}
                         >
                           {b.status}
@@ -404,7 +404,7 @@ export const DashboardPage: React.FC = () => {
                       </td>
 
                       {showDislikeStats && (
-                        <td className="py-3.5 px-4 sm:px-6 text-center font-mono text-purple-400 font-semibold">
+                        <td className="py-3.5 px-4 sm:px-6 text-center font-mono text-primary font-semibold">
                           {b.dislike_count ?? 0}
                         </td>
                       )}
@@ -420,7 +420,7 @@ export const DashboardPage: React.FC = () => {
                         <div className="flex items-center justify-end gap-2">
                           <Link
                             to={`/write/${b.id}`}
-                            className="p-1.5 rounded-lg text-foreground-muted hover:text-purple-400 hover:bg-background-elevated transition-colors"
+                            className="p-1.5 rounded-lg text-foreground-muted hover:text-primary hover:bg-background-elevated transition-colors"
                             title="Edit"
                           >
                             <Edit2 className="w-3.5 h-3.5" />

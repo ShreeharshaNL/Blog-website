@@ -1,19 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
   <defs>
     <linearGradient id="inkGrad" x1="20" y1="20" x2="180" y2="180" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#a855f7" />
-      <stop offset="50%" stop-color="#7c3aed" />
-      <stop offset="100%" stop-color="#4f46e5" />
+      <stop offset="0%" stop-color="#f6dfb7" />
+      <stop offset="25%" stop-color="#f2ab42" />
+      <stop offset="65%" stop-color="#ea580c" />
+      <stop offset="100%" stop-color="#9a3412" />
     </linearGradient>
     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="8" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
   </defs>
-  <rect width="200" height="200" rx="44" fill="#0c0a17" />
-  <rect x="2" y="2" width="196" height="196" rx="42" stroke="url(#inkGrad)" stroke-width="2" stroke-opacity="0.3" />
-  <!-- Feather / Quill / Infinite Nib Symbol -->
+  <rect width="200" height="200" rx="44" fill="#14110f" />
+  <rect x="2" y="2" width="196" height="196" rx="42" stroke="url(#inkGrad)" stroke-width="2" stroke-opacity="0.4" />
+  <!-- Feather / Quill / Nib Symbol with warm sunset terracotta gradient -->
   <path d="M100 32C85 62 58 88 52 115C46 142 62 168 95 168C128 168 144 142 138 115C132 88 115 62 100 32Z" fill="url(#inkGrad)" />
-  <path d="M100 35L100 135" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.9" />
-  <circle cx="100" cy="144" r="5" fill="#ffffff" />
+  <path d="M100 35L100 135" stroke="#fcf6ee" stroke-width="4" stroke-linecap="round" opacity="0.9" />
+  <circle cx="100" cy="144" r="5" fill="#fcf6ee" />
 </svg>

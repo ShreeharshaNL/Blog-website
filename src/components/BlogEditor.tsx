@@ -53,7 +53,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-purple-400 underline underline-offset-2',
+          class: 'text-orange-500 underline underline-offset-2',
         },
       }),
       Image.configure({
@@ -172,7 +172,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('heading', { level: 1 }) ? 'bg-purple-600/20 text-purple-400 font-bold' : 'hover:bg-background-elevated'
+            editor.isActive('heading', { level: 1 }) ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold' : 'hover:bg-background-elevated'
           }`}
           title="Heading 1"
         >
@@ -182,7 +182,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('heading', { level: 2 }) ? 'bg-purple-600/20 text-purple-400 font-bold' : 'hover:bg-background-elevated'
+            editor.isActive('heading', { level: 2 }) ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold' : 'hover:bg-background-elevated'
           }`}
           title="Heading 2"
         >
@@ -192,7 +192,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('heading', { level: 3 }) ? 'bg-purple-600/20 text-purple-400 font-bold' : 'hover:bg-background-elevated'
+            editor.isActive('heading', { level: 3 }) ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold' : 'hover:bg-background-elevated'
           }`}
           title="Heading 3"
         >
@@ -206,7 +206,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('bold') ? 'bg-purple-600/20 text-purple-400 font-bold' : 'hover:bg-background-elevated'
+            editor.isActive('bold') ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold' : 'hover:bg-background-elevated'
           }`}
           title="Bold"
         >
@@ -216,7 +216,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('italic') ? 'bg-purple-600/20 text-purple-400 font-bold' : 'hover:bg-background-elevated'
+            editor.isActive('italic') ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold' : 'hover:bg-background-elevated'
           }`}
           title="Italic"
         >
@@ -226,7 +226,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('underline') ? 'bg-purple-600/20 text-purple-400 font-bold' : 'hover:bg-background-elevated'
+            editor.isActive('underline') ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold' : 'hover:bg-background-elevated'
           }`}
           title="Underline"
         >
@@ -240,7 +240,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('bulletList') ? 'bg-purple-600/20 text-purple-400' : 'hover:bg-background-elevated'
+            editor.isActive('bulletList') ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400' : 'hover:bg-background-elevated'
           }`}
           title="Bullet List"
         >
@@ -250,7 +250,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('orderedList') ? 'bg-purple-600/20 text-purple-400' : 'hover:bg-background-elevated'
+            editor.isActive('orderedList') ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400' : 'hover:bg-background-elevated'
           }`}
           title="Ordered List"
         >
@@ -260,7 +260,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('blockquote') ? 'bg-purple-600/20 text-purple-400' : 'hover:bg-background-elevated'
+            editor.isActive('blockquote') ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400' : 'hover:bg-background-elevated'
           }`}
           title="Blockquote"
         >
@@ -270,7 +270,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('codeBlock') ? 'bg-purple-600/20 text-purple-400 font-mono' : 'hover:bg-background-elevated'
+            editor.isActive('codeBlock') ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400 font-mono' : 'hover:bg-background-elevated'
           }`}
           title="Code Block"
         >
@@ -284,7 +284,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           type="button"
           onClick={setLink}
           className={`p-1.5 rounded-lg text-foreground-muted hover:text-foreground transition-colors ${
-            editor.isActive('link') ? 'bg-purple-600/20 text-purple-400' : 'hover:bg-background-elevated'
+            editor.isActive('link') ? 'bg-orange-500/20 text-orange-600 dark:text-orange-400' : 'hover:bg-background-elevated'
           }`}
           title="Hyperlink"
         >
@@ -324,7 +324,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
         </button>
 
         {isUploading && (
-          <span className="text-xs text-purple-400 font-medium ml-2 animate-pulse">
+          <span className="text-xs text-orange-500 dark:text-orange-400 font-medium ml-2 animate-pulse">
             Uploading image...
           </span>
         )}

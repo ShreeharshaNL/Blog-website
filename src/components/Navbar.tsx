@@ -36,11 +36,11 @@ export const Navbar: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo & Brand */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 p-0.5 shadow-md shadow-purple-900/20 group-hover:shadow-purple-700/40 transition-all duration-300">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 via-amber-500 to-amber-300 p-0.5 shadow-md shadow-orange-950/20 group-hover:shadow-orange-600/40 transition-all duration-300">
               <img src="/logo.svg" alt="INKVERSE" className="w-full h-full rounded-[10px]" />
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-purple-400 via-indigo-300 to-purple-200 bg-clip-text text-transparent">
+              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 dark:from-amber-200 dark:via-orange-300 dark:to-amber-500 bg-clip-text text-transparent">
                 INKVERSE
               </span>
               <span className="text-[9px] uppercase tracking-widest text-foreground-subtle -mt-1 font-semibold">
@@ -55,7 +55,7 @@ export const Navbar: React.FC = () => {
               to="/explore"
               className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
                 isActive('/explore')
-                  ? 'text-purple-400 bg-purple-500/10'
+                  ? 'text-primary bg-primary/10'
                   : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
               }`}
             >
@@ -66,7 +66,7 @@ export const Navbar: React.FC = () => {
               to="/categories"
               className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
                 isActive('/categories')
-                  ? 'text-purple-400 bg-purple-500/10'
+                  ? 'text-primary bg-primary/10'
                   : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
               }`}
             >
@@ -77,7 +77,7 @@ export const Navbar: React.FC = () => {
               to="/leaderboard"
               className={`px-3.5 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
                 isActive('/leaderboard')
-                  ? 'text-purple-400 bg-purple-500/10'
+                  ? 'text-primary bg-primary/10'
                   : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
               }`}
             >
@@ -96,7 +96,7 @@ export const Navbar: React.FC = () => {
                 {/* Write Button */}
                 <Link
                   to="/write"
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium bg-purple-600 hover:bg-purple-700 text-white shadow-sm shadow-purple-950/30 transition-all hover:shadow-purple-600/30"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium bg-primary hover:bg-orange-600 text-white shadow-sm shadow-orange-950/30 transition-all hover:shadow-orange-600/30"
                 >
                   <PenTool className="w-3.5 h-3.5" />
                   <span>Write</span>
@@ -109,7 +109,7 @@ export const Navbar: React.FC = () => {
                 <div className="relative">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center gap-2 p-1 rounded-full border border-border hover:border-purple-500/40 transition-colors focus:outline-none"
+                    className="flex items-center gap-2 p-1 rounded-full border border-border hover:border-orange-500/40 transition-colors focus:outline-none"
                     aria-label="User menu"
                   >
                     <img
@@ -130,7 +130,7 @@ export const Navbar: React.FC = () => {
                         <p className="text-xs text-foreground-muted truncate">@{user.username}</p>
                         <div className="mt-2 flex items-center justify-between">
                           <LevelBadge points={user.points} level={user.level} />
-                          <span className="text-xs font-mono font-semibold text-purple-400">
+                          <span className="text-xs font-mono font-semibold text-amber-500 dark:text-amber-400">
                             {user.points} pts
                           </span>
                         </div>
@@ -142,7 +142,7 @@ export const Navbar: React.FC = () => {
                         onClick={() => setIsProfileOpen(false)}
                         className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors"
                       >
-                        <LayoutDashboard className="w-4 h-4 text-purple-400" />
+                        <LayoutDashboard className="w-4 h-4 text-orange-500 dark:text-orange-400" />
                         <span>Author Dashboard</span>
                       </Link>
 
@@ -151,7 +151,7 @@ export const Navbar: React.FC = () => {
                         onClick={() => setIsProfileOpen(false)}
                         className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors"
                       >
-                        <UserIcon className="w-4 h-4 text-blue-400" />
+                        <UserIcon className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                         <span>My Public Profile</span>
                       </Link>
 
@@ -160,7 +160,7 @@ export const Navbar: React.FC = () => {
                         onClick={() => setIsProfileOpen(false)}
                         className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors"
                       >
-                        <Bookmark className="w-4 h-4 text-emerald-400" />
+                        <Bookmark className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
                         <span>Saved Bookmarks</span>
                       </Link>
 
@@ -169,7 +169,7 @@ export const Navbar: React.FC = () => {
                         onClick={() => setIsProfileOpen(false)}
                         className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors"
                       >
-                        <Sparkles className="w-4 h-4 text-amber-400" />
+                        <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400" />
                         <span>Points &amp; Rewards Ledger</span>
                       </Link>
 
@@ -177,7 +177,7 @@ export const Navbar: React.FC = () => {
                         <Link
                           to="/admin"
                           onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-purple-400 hover:text-purple-300 hover:bg-purple-950/20 transition-colors font-medium"
+                          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-orange-500 dark:text-orange-400 hover:text-orange-300 hover:bg-orange-950/20 transition-colors font-medium"
                         >
                           <Shield className="w-4 h-4" />
                           <span>Admin Panel</span>
@@ -205,13 +205,13 @@ export const Navbar: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsLoginModalOpen(true)}
-                  className="px-3.5 py-1.5 rounded-lg text-sm font-semibold border border-purple-500/40 text-purple-400 hover:bg-purple-500/10 transition-colors"
+                  className="px-3.5 py-1.5 rounded-lg text-sm font-semibold border border-orange-500/40 text-orange-600 dark:text-orange-400 hover:bg-orange-500/10 transition-colors"
                 >
                   Sign In
                 </button>
                 <button
                   onClick={() => setIsLoginModalOpen(true)}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-semibold bg-purple-600 hover:bg-purple-700 text-white transition-all shadow-sm shadow-purple-900/30"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-semibold bg-primary hover:bg-orange-600 text-white transition-all shadow-sm shadow-orange-900/30"
                 >
                   <span>Start Writing</span>
                 </button>
@@ -237,7 +237,7 @@ export const Navbar: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-background-elevated"
             >
-              <Compass className="w-4 h-4 text-purple-400" />
+              <Compass className="w-4 h-4 text-orange-500 dark:text-orange-400" />
               <span>Explore Stories</span>
             </Link>
             <Link
@@ -245,7 +245,7 @@ export const Navbar: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(false)}
               className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-background-elevated"
             >
-              <Grid className="w-4 h-4 text-blue-400" />
+              <Grid className="w-4 h-4 text-amber-500" />
               <span>Categories</span>
             </Link>
             <Link
@@ -261,7 +261,7 @@ export const Navbar: React.FC = () => {
                 <Link
                   to="/write"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-purple-600/10 text-purple-400"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-orange-600/10 text-orange-500 dark:text-orange-400"
                 >
                   <PenTool className="w-4 h-4" />
                   <span>Write a Story</span>
@@ -271,7 +271,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-background-elevated"
                 >
-                  <LayoutDashboard className="w-4 h-4 text-purple-400" />
+                  <LayoutDashboard className="w-4 h-4 text-orange-500 dark:text-orange-400" />
                   <span>Author Dashboard</span>
                 </Link>
               </>

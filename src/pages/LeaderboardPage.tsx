@@ -62,7 +62,7 @@ export const LeaderboardPage: React.FC = () => {
               onClick={() => setTimeframe(tab.id as any)}
               className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
                 timeframe === tab.id
-                  ? 'bg-purple-600 text-white shadow-sm'
+                  ? 'bg-primary text-white shadow-sm'
                   : 'text-foreground-muted hover:text-foreground'
               }`}
             >
@@ -129,7 +129,7 @@ export const LeaderboardPage: React.FC = () => {
                     <td className="py-4 px-4 sm:px-6">
                       <Link
                         to={`/@${writer.username}`}
-                        className="flex items-center gap-3 group-hover:text-purple-400 transition-colors"
+                        className="flex items-center gap-3 group-hover:text-primary transition-colors"
                       >
                         <img
                           src={
@@ -140,7 +140,7 @@ export const LeaderboardPage: React.FC = () => {
                           className="w-10 h-10 rounded-full object-cover border border-border"
                         />
                         <div className="min-w-0">
-                          <p className="font-semibold text-sm text-foreground group-hover:text-purple-300">
+                          <p className="font-semibold text-sm text-foreground group-hover:text-primary">
                             {writer.display_name}
                           </p>
                           <p className="text-xs text-foreground-subtle font-mono">@{writer.username}</p>
@@ -151,7 +151,7 @@ export const LeaderboardPage: React.FC = () => {
                                 <span
                                   key={b.id}
                                   title={`${b.name}: ${b.description}`}
-                                  className="p-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20"
+                                  className="p-1 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20"
                                 >
                                   <BadgeIcon icon={b.icon} className="w-3 h-3" />
                                 </span>
@@ -178,7 +178,7 @@ export const LeaderboardPage: React.FC = () => {
                     </td>
 
                     {/* Points */}
-                    <td className="py-4 px-4 sm:px-6 text-right font-mono font-bold text-sm text-purple-400">
+                    <td className="py-4 px-4 sm:px-6 text-right font-mono font-bold text-sm text-amber-500 dark:text-amber-400">
                       +{writer.points.toLocaleString()} pts
                     </td>
                   </tr>
@@ -194,7 +194,7 @@ export const LeaderboardPage: React.FC = () => {
         {/* Creator Tiers */}
         <div className="p-6 rounded-2xl border border-border bg-background-surface">
           <div className="flex items-center gap-2 mb-4">
-            <Award className="w-5 h-5 text-purple-400" />
+            <Award className="w-5 h-5 text-amber-500 dark:text-amber-400" />
             <h3 className="font-serif text-xl font-bold">Creator Level Progression</h3>
           </div>
           <p className="text-xs text-foreground-muted mb-4">
@@ -229,27 +229,27 @@ export const LeaderboardPage: React.FC = () => {
           <div className="space-y-2.5 text-xs">
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-background-elevated/50 border border-border/50">
               <span className="text-foreground">Publish an approved story</span>
-              <span className="font-mono font-bold text-purple-400">+20 points</span>
+              <span className="font-mono font-bold text-amber-500 dark:text-amber-400">+20 points</span>
             </div>
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-background-elevated/50 border border-border/50">
               <span className="text-foreground">Every 100 verified unique readers</span>
-              <span className="font-mono font-bold text-purple-400">+5 points</span>
+              <span className="font-mono font-bold text-amber-500 dark:text-amber-400">+5 points</span>
             </div>
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-background-elevated/50 border border-border/50">
               <span className="text-foreground">Every 10 genuine likes received</span>
-              <span className="font-mono font-bold text-purple-400">+5 points</span>
+              <span className="font-mono font-bold text-amber-500 dark:text-amber-400">+5 points</span>
             </div>
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-background-elevated/50 border border-border/50">
               <span className="text-foreground">Story selected as Editor's Choice</span>
-              <span className="font-mono font-bold text-purple-400">+50 points</span>
+              <span className="font-mono font-bold text-amber-500 dark:text-amber-400">+50 points</span>
             </div>
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-background-elevated/50 border border-border/50">
               <span className="text-foreground">Unlock an achievement badge</span>
-              <span className="font-mono font-bold text-purple-400">+20 to +50 points</span>
+              <span className="font-mono font-bold text-amber-500 dark:text-amber-400">+20 to +50 points</span>
             </div>
             <div className="flex items-center justify-between p-2.5 rounded-xl bg-background-elevated/50 border border-border/50">
               <span className="text-foreground">Complete a 7-day writing streak</span>
-              <span className="font-mono font-bold text-purple-400">+25 points</span>
+              <span className="font-mono font-bold text-amber-500 dark:text-amber-400">+25 points</span>
             </div>
           </div>
         </div>
@@ -273,7 +273,7 @@ export const LeaderboardPage: React.FC = () => {
                 className="p-4 rounded-xl border border-border bg-background-elevated/40 flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-3 border border-purple-500/20">
+                  <div className="w-9 h-9 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-3 border border-orange-500/20">
                     <BadgeIcon icon={ach.icon} className="w-5 h-5" />
                   </div>
                   <h4 className="font-semibold text-sm mb-1">{ach.name}</h4>
@@ -281,7 +281,7 @@ export const LeaderboardPage: React.FC = () => {
                     {ach.description}
                   </p>
                 </div>
-                <div className="mt-3 pt-2 border-t border-border/50 text-[11px] font-mono font-bold text-purple-400">
+                <div className="mt-3 pt-2 border-t border-border/50 text-[11px] font-mono font-bold text-amber-500 dark:text-amber-400">
                   +{ach.badge_points} bonus points
                 </div>
               </div>

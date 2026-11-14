@@ -107,7 +107,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
               <select
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className="w-full text-xs py-2.5 px-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+                className="w-full text-xs py-2.5 px-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
               >
                 {REPORT_REASONS.map((r) => (
                   <option key={r} value={r}>
@@ -126,7 +126,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
                 placeholder="Provide context or specific timestamps/quotes..."
-                className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+                className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
               />
             </div>
 

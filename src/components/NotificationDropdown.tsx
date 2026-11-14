@@ -67,7 +67,7 @@ export const NotificationDropdown: React.FC = () => {
         return <Award className="w-4 h-4 text-amber-400" />;
       case 'points':
       default:
-        return <Sparkles className="w-4 h-4 text-purple-400" />;
+        return <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400" />;
     }
   };
 
@@ -75,13 +75,13 @@ export const NotificationDropdown: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={handleToggle}
-        className="relative p-2 rounded-full border border-border bg-background-surface hover:bg-background-elevated text-foreground-muted hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+        className="relative p-2 rounded-full border border-border bg-background-surface hover:bg-background-elevated text-foreground-muted hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500/50"
         title="Notifications"
         aria-label="Notifications"
       >
         <Bell className="w-4 h-4" />
         {unreadNotifications > 0 && (
-          <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-purple-600 rounded-full border-2 border-background animate-pulse-subtle">
+          <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-primary rounded-full border-2 border-background animate-pulse-subtle">
             {unreadNotifications > 99 ? '99+' : unreadNotifications}
           </span>
         )}
@@ -94,7 +94,7 @@ export const NotificationDropdown: React.FC = () => {
             {unreadNotifications > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="inline-flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 font-medium transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-orange-500 dark:text-orange-400 hover:text-orange-300 font-medium transition-colors"
               >
                 <Check className="w-3.5 h-3.5" />
                 <span>Mark all read</span>
@@ -118,7 +118,7 @@ export const NotificationDropdown: React.FC = () => {
                   to={notif.link || '#'}
                   onClick={() => setIsOpen(false)}
                   className={`flex items-start gap-3 p-3.5 hover:bg-background-elevated transition-colors ${
-                    !notif.is_read ? 'bg-purple-950/10' : ''
+                    !notif.is_read ? 'bg-orange-950/15' : ''
                   }`}
                 >
                   <div className="mt-0.5 shrink-0 p-2 rounded-lg bg-background-subtle">
@@ -128,7 +128,7 @@ export const NotificationDropdown: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <p className="text-xs font-semibold text-foreground truncate">{notif.title}</p>
                       {!notif.is_read && (
-                        <span className="w-2 h-2 rounded-full bg-purple-500 shrink-0 ml-2" />
+                        <span className="w-2 h-2 rounded-full bg-primary shrink-0 ml-2" />
                       )}
                     </div>
                     <p className="text-xs text-foreground-muted mt-0.5 line-clamp-2">{notif.message}</p>

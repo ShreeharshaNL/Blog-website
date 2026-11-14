@@ -35,7 +35,7 @@ export const PointsHistoryPage: React.FC = () => {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center">
         <h2 className="font-serif text-3xl font-bold mb-3">Sign In Required</h2>
-        <Link to="/" className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-purple-600 text-white">
+        <Link to="/" className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white">
           Return Home
         </Link>
       </div>
@@ -48,7 +48,7 @@ export const PointsHistoryPage: React.FC = () => {
       <div className="space-y-3">
         <Link
           to="/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs text-foreground-muted hover:text-purple-400 font-semibold"
+          className="inline-flex items-center gap-1.5 text-xs text-foreground-muted hover:text-primary font-semibold"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Author Dashboard</span>
@@ -57,7 +57,7 @@ export const PointsHistoryPage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
-              <Sparkles className="w-6 h-6 text-purple-400" />
+              <Sparkles className="w-6 h-6 text-amber-500 dark:text-amber-400" />
               <span>Points &amp; Rewards Ledger</span>
             </h1>
             <p className="text-xs text-foreground-muted mt-1">
@@ -65,12 +65,12 @@ export const PointsHistoryPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-orange-500/10 border border-orange-500/20">
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-purple-300 font-semibold font-mono">
+              <p className="text-[10px] uppercase tracking-wider text-orange-600 dark:text-orange-300 font-semibold font-mono">
                 Current Balance
               </p>
-              <p className="font-mono text-2xl font-bold text-purple-300">{user.points} pts</p>
+              <p className="font-mono text-2xl font-bold text-amber-500 dark:text-amber-400">{user.points} pts</p>
             </div>
             <LevelBadge level={user.level} />
           </div>
@@ -140,7 +140,7 @@ export const PointsHistoryPage: React.FC = () => {
                           tx.is_reversed
                             ? 'line-through text-foreground-subtle'
                             : tx.amount > 0
-                            ? 'text-purple-400'
+                            ? 'text-amber-400'
                             : 'text-rose-400'
                         }
                       >

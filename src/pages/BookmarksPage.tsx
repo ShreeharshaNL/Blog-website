@@ -30,12 +30,12 @@ export const BookmarksPage: React.FC = () => {
   if (!user) {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center">
-        <Bookmark className="w-10 h-10 text-purple-400 mx-auto mb-4" />
+        <Bookmark className="w-10 h-10 text-primary mx-auto mb-4" />
         <h2 className="font-serif text-3xl font-bold mb-3">Sign in to View Bookmarks</h2>
         <p className="text-sm text-foreground-muted mb-6">
           Save interesting stories to your private reading list and return to them anytime.
         </p>
-        <Link to="/" className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-purple-600 text-white">
+        <Link to="/" className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white transition-colors shadow-sm shadow-primary/20">
           Return Home
         </Link>
       </div>
@@ -46,7 +46,7 @@ export const BookmarksPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
-          <Bookmark className="w-6 h-6 text-purple-400" />
+          <Bookmark className="w-6 h-6 text-primary" />
           <span>Reading List ({bookmarks.length})</span>
         </h1>
         <p className="text-sm text-foreground-muted mt-1">
@@ -69,7 +69,7 @@ export const BookmarksPage: React.FC = () => {
           </p>
           <Link
             to="/explore"
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white transition-colors shadow-sm shadow-primary/20"
           >
             Explore Stories
           </Link>

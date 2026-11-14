@@ -190,7 +190,7 @@ export const BlogDetailPage: React.FC = () => {
         </p>
         <Link
           to="/explore"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-purple-600 text-white"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Explore Other Stories</span>
@@ -213,7 +213,7 @@ export const BlogDetailPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <Link
             to="/explore"
-            className="inline-flex items-center gap-1.5 text-xs text-foreground-subtle hover:text-purple-400 font-semibold transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-foreground-subtle hover:text-primary font-semibold transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Stories</span>
@@ -221,7 +221,7 @@ export const BlogDetailPage: React.FC = () => {
           {blog.category && (
             <Link
               to={`/categories/${blog.category.slug}`}
-              className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 transition-colors"
+              className="px-3 py-1 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 transition-colors"
             >
               {blog.category.name}
             </Link>
@@ -231,7 +231,7 @@ export const BlogDetailPage: React.FC = () => {
         {/* Article Header */}
         <header className="space-y-6">
           {blog.is_editor_pick && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-600/90 text-white shadow-md shadow-purple-950/30">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md shadow-orange-950/30">
               <Award className="w-3.5 h-3.5" />
               <span>Editor's Pick</span>
             </div>
@@ -255,14 +255,14 @@ export const BlogDetailPage: React.FC = () => {
                     `https://api.dicebear.com/7.x/identicon/svg?seed=${blog.author?.username}`
                   }
                   alt={blog.author?.display_name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-border hover:border-purple-500 transition-colors"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-border hover:border-orange-500 transition-colors"
                 />
               </Link>
               <div>
                 <div className="flex items-center gap-2">
                   <Link
                     to={`/@${blog.author?.username}`}
-                    className="font-bold text-sm text-foreground hover:text-purple-400 transition-colors"
+                    className="font-bold text-sm text-foreground hover:text-primary transition-colors"
                   >
                     {blog.author?.display_name}
                   </Link>
@@ -304,8 +304,8 @@ export const BlogDetailPage: React.FC = () => {
                   onClick={handleFollowToggle}
                   className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                     isFollowing
-                      ? 'bg-purple-600/10 text-purple-400 border border-purple-500/30 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/30'
-                      : 'bg-purple-600 hover:bg-purple-700 text-white'
+                      ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/30'
+                      : 'bg-primary hover:bg-orange-600 text-white'
                   }`}
                 >
                   {isFollowing ? (
@@ -355,7 +355,7 @@ export const BlogDetailPage: React.FC = () => {
                   <Link
                     key={tag.id}
                     to={`/explore?search=${tag.slug}`}
-                    className="px-3 py-1 rounded-lg text-xs font-mono font-medium bg-background-elevated hover:bg-purple-600/20 hover:text-purple-300 text-foreground-muted border border-border transition-colors"
+                    className="px-3 py-1 rounded-lg text-xs font-mono font-medium bg-background-elevated hover:bg-orange-500/20 hover:text-orange-600 dark:hover:text-orange-300 text-foreground-muted border border-border transition-colors"
                   >
                     #{tag.name}
                   </Link>
@@ -390,7 +390,7 @@ export const BlogDetailPage: React.FC = () => {
                   onClick={() => handleReaction('dislike')}
                   className={`p-2 rounded-xl text-xs border transition-all ${
                     userReaction === 'dislike'
-                      ? 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+                      ? 'bg-orange-500/20 text-orange-600 dark:text-orange-300 border-orange-500/40'
                       : 'border-border hover:bg-background-elevated text-foreground-muted hover:text-foreground'
                   }`}
                   title="Dislike (Feedback is strictly private to author)"
@@ -405,10 +405,10 @@ export const BlogDetailPage: React.FC = () => {
                 {/* Private Dislike Stats Indicator (ONLY FOR AUTHOR WHEN ENABLED) */}
                 {isAuthor && blog.dislike_count !== undefined && (
                   <span
-                    className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono bg-purple-950/30 border border-purple-500/30 text-purple-300"
+                    className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono bg-orange-950/30 border border-orange-500/30 text-orange-300"
                     title="Private dislike analytics visible only to you as author"
                   >
-                    <Lock className="w-3 h-3 text-purple-400" />
+                    <Lock className="w-3 h-3 text-orange-400" />
                     <span>Private dislikes: {blog.dislike_count}</span>
                   </span>
                 )}
@@ -420,7 +420,7 @@ export const BlogDetailPage: React.FC = () => {
                   onClick={handleBookmark}
                   className={`p-2 rounded-xl border transition-colors ${
                     isBookmarked
-                      ? 'bg-purple-600 text-white border-purple-600'
+                      ? 'bg-primary text-white border-primary'
                       : 'border-border hover:bg-background-elevated text-foreground-muted hover:text-foreground'
                   }`}
                   title={isBookmarked ? 'Saved to bookmarks' : 'Bookmark story'}
@@ -461,7 +461,7 @@ export const BlogDetailPage: React.FC = () => {
                   <div className="flex items-center justify-between mb-1">
                     <Link
                       to={`/@${blog.author.username}`}
-                      className="font-bold text-base hover:text-purple-400 transition-colors"
+                      className="font-bold text-base hover:text-primary transition-colors"
                     >
                       Written by {blog.author.display_name}
                     </Link>

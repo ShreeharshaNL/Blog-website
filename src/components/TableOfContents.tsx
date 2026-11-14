@@ -56,7 +56,7 @@ export const TableOfContents: React.FC<{ contentHtml: string }> = ({ contentHtml
   return (
     <div className="p-4 rounded-2xl bg-background-surface border border-border">
       <div className="flex items-center gap-2 mb-3 text-xs font-semibold uppercase tracking-wider text-foreground-muted">
-        <List className="w-4 h-4 text-purple-400" />
+        <List className="w-4 h-4 text-orange-500 dark:text-orange-400" />
         <span>Table of Contents</span>
       </div>
       <nav className="space-y-1.5 text-xs">
@@ -78,7 +78,7 @@ export const TableOfContents: React.FC<{ contentHtml: string }> = ({ contentHtml
               item.level === 3 ? 'pl-4' : item.level === 2 ? 'pl-2' : ''
             } ${
               activeId === item.id
-                ? 'text-purple-400 font-semibold'
+                ? 'text-orange-500 dark:text-orange-400 font-semibold'
                 : 'text-foreground-muted hover:text-foreground'
             }`}
           >

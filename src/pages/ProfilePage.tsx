@@ -125,7 +125,7 @@ export const ProfilePage: React.FC = () => {
         </p>
         <Link
           to="/"
-          className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-purple-600 text-white"
+          className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white"
         >
           Return Home
         </Link>
@@ -182,8 +182,8 @@ export const ProfilePage: React.FC = () => {
                 onClick={handleFollowToggle}
                 className={`inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-semibold transition-all ${
                   isFollowing
-                    ? 'bg-purple-600/10 text-purple-400 border border-purple-500/30 hover:bg-rose-500/10 hover:text-rose-400'
-                    : 'bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-900/30'
+                    ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 hover:bg-rose-500/10 hover:text-rose-400'
+                    : 'bg-primary hover:bg-orange-600 text-white shadow-md shadow-orange-900/30'
                 }`}
               >
                 {isFollowing ? (
@@ -223,7 +223,7 @@ export const ProfilePage: React.FC = () => {
             <p className="text-[11px] text-foreground-subtle uppercase mt-0.5">Genuine Likes</p>
           </div>
           <div>
-            <p className="font-serif text-xl sm:text-2xl font-bold text-purple-400">
+            <p className="font-serif text-xl sm:text-2xl font-bold text-amber-500 dark:text-amber-400">
               {profile.points}
             </p>
             <p className="text-[11px] text-foreground-subtle uppercase mt-0.5">Reputation Points</p>
@@ -248,11 +248,11 @@ export const ProfilePage: React.FC = () => {
             {profile.badges.map((b) => (
               <div
                 key={b.id}
-                className="flex items-center gap-2 p-2.5 rounded-xl border border-purple-500/20 bg-purple-500/10 text-xs"
+                className="flex items-center gap-2 p-2.5 rounded-xl border border-orange-500/20 bg-orange-500/10 text-xs"
               >
-                <BadgeIcon icon={b.icon} className="w-4 h-4 text-purple-400" />
+                <BadgeIcon icon={b.icon} className="w-4 h-4 text-primary" />
                 <span className="font-semibold text-foreground">{b.name}</span>
-                <span className="text-[10px] font-mono text-purple-300">+{b.badge_points} pts</span>
+                <span className="text-[10px] font-mono text-orange-600 dark:text-orange-300">+{b.badge_points} pts</span>
               </div>
             ))}
           </div>
@@ -263,7 +263,7 @@ export const ProfilePage: React.FC = () => {
       <section className="space-y-6">
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <h2 className="font-serif text-2xl font-bold flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-purple-400" />
+            <BookOpen className="w-5 h-5 text-primary" />
             <span>Stories by {profile.display_name} ({blogs.length})</span>
           </h2>
         </div>
@@ -295,7 +295,7 @@ export const ProfilePage: React.FC = () => {
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-orange-500"
                 />
               </div>
 
@@ -307,7 +307,7 @@ export const ProfilePage: React.FC = () => {
                   rows={3}
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500 resize-none"
+                  className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-orange-500 resize-none"
                 />
               </div>
 
@@ -320,7 +320,7 @@ export const ProfilePage: React.FC = () => {
                   value={avatarUrl}
                   onChange={(e) => setAvatarUrl(e.target.value)}
                   placeholder="https://..."
-                  className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-orange-500"
                 />
               </div>
 
@@ -334,7 +334,7 @@ export const ProfilePage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-xl"
+                  className="px-4 py-2 text-xs font-semibold bg-primary hover:bg-orange-600 text-white rounded-xl"
                 >
                   Save Changes
                 </button>

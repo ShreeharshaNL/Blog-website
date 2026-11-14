@@ -156,7 +156,7 @@ export const AdminPage: React.FC = () => {
         <p className="text-sm text-foreground-muted mb-6">
           Administrator or Staff privileges are required to access this panel.
         </p>
-        <Link to="/" className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-purple-600 text-white">
+        <Link to="/" className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white transition-colors">
           Return Home
         </Link>
       </div>
@@ -169,7 +169,7 @@ export const AdminPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border">
         <div>
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30">
+            <div className="p-2 rounded-xl bg-primary/10 text-primary border border-primary/20">
               <Shield className="w-6 h-6" />
             </div>
             <div>
@@ -209,7 +209,7 @@ export const AdminPage: React.FC = () => {
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold shrink-0 transition-colors ${
                 activeTab === tab.id
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-primary text-white shadow-sm shadow-primary/20'
                   : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
               }`}
             >
@@ -244,7 +244,7 @@ export const AdminPage: React.FC = () => {
               <span className="text-[11px] uppercase tracking-wider text-foreground-subtle font-semibold">
                 Publications
               </span>
-              <p className="font-serif text-2xl font-bold text-purple-400 mt-1">
+              <p className="font-serif text-2xl font-bold text-primary mt-1">
                 {stats.stats.total_blogs}
               </p>
               <p className="text-[10px] text-foreground-subtle mt-0.5">Live stories</p>
@@ -289,7 +289,7 @@ export const AdminPage: React.FC = () => {
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
               placeholder="Search users by username, display name, or email..."
-              className="w-full max-w-md text-xs p-3 rounded-xl border border-border bg-background-surface text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+              className="w-full max-w-md text-xs p-3 rounded-xl border border-border bg-background-surface text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
             />
           </div>
 
@@ -338,7 +338,7 @@ export const AdminPage: React.FC = () => {
                       </span>
                     </td>
 
-                    <td className="py-3.5 px-4 sm:px-6 text-center font-mono font-bold text-purple-400">
+                    <td className="py-3.5 px-4 sm:px-6 text-center font-mono font-bold text-primary">
                       {u.points}
                     </td>
 
@@ -474,7 +474,7 @@ export const AdminPage: React.FC = () => {
           <div className="pt-4 border-t border-border flex justify-end">
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white"
+              className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white transition-colors shadow-sm shadow-primary/20"
             >
               Save Settings
             </button>
@@ -549,7 +549,7 @@ export const AdminPage: React.FC = () => {
               <tbody className="divide-y divide-border/60 font-mono text-[11px]">
                 {auditLogs.map((log) => (
                   <tr key={log.id} className="hover:bg-background-elevated/40">
-                    <td className="py-3 px-4 sm:px-6 font-semibold text-purple-400">{log.action}</td>
+                    <td className="py-3 px-4 sm:px-6 font-semibold text-primary">{log.action}</td>
                     <td className="py-3 px-4 sm:px-6">@{log.admin_username || log.admin_id}</td>
                     <td className="py-3 px-4 sm:px-6">{log.target_type}: {log.target_id}</td>
                     <td className="py-3 px-4 sm:px-6 max-w-xs truncate text-foreground-muted">{log.details}</td>

@@ -84,7 +84,7 @@ export const OnboardingPage: React.FC = () => {
     <div className="max-w-xl mx-auto px-4 py-12">
       <div className="rounded-3xl border border-border bg-background-surface p-6 sm:p-10 shadow-2xl">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-purple-600/10 text-purple-400 border border-purple-500/20 mb-3">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 text-primary border border-primary/20 mb-3">
             <Sparkles className="w-6 h-6" />
           </div>
           <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground">
@@ -116,7 +116,7 @@ export const OnboardingPage: React.FC = () => {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^\w-]/g, ''))}
-                className="w-full text-xs font-mono pl-8 pr-3 py-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+                className="w-full text-xs font-mono pl-8 pr-3 py-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
                 placeholder="your_handle"
               />
             </div>
@@ -135,7 +135,7 @@ export const OnboardingPage: React.FC = () => {
               required
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+              className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
               placeholder="e.g. Elena Rostova"
             />
           </div>
@@ -149,7 +149,7 @@ export const OnboardingPage: React.FC = () => {
               rows={2}
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500 resize-none"
+              className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary resize-none"
               placeholder="A sentence or two about what you write and think about..."
             />
           </div>
@@ -163,7 +163,7 @@ export const OnboardingPage: React.FC = () => {
               type="url"
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}
-              className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+              className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
               placeholder="https://images.unsplash.com/..."
             />
           </div>
@@ -183,7 +183,7 @@ export const OnboardingPage: React.FC = () => {
                     onClick={() => toggleInterest(cat.slug)}
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all border ${
                       isSelected
-                        ? 'bg-purple-600 text-white border-purple-600 shadow-sm shadow-purple-900/30'
+                        ? 'bg-primary text-white border-primary shadow-sm shadow-primary/20'
                         : 'border-border bg-background-elevated hover:bg-background-subtle text-foreground-muted'
                     }`}
                   >
@@ -199,7 +199,7 @@ export const OnboardingPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2"
             >
               <span>{isSubmitting ? 'Saving Profile...' : 'Complete Profile & Enter INKVERSE'}</span>
               <ArrowRight className="w-4 h-4" />

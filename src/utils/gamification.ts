@@ -52,11 +52,11 @@ export function calculateLevel(points: number): LevelInfo {
 }
 
 export const LEVEL_COLORS: Record<number, { bg: string; text: string; border: string }> = {
-  1: { bg: 'bg-zinc-500/10', text: 'text-zinc-400', border: 'border-zinc-500/30' },
-  2: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/30' },
-  3: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30' },
-  4: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' },
-  5: { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/30' },
-  6: { bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/30' },
-  7: { bg: 'bg-gradient-to-r from-amber-500/20 to-purple-500/20', text: 'text-amber-300 font-bold', border: 'border-amber-400/50' },
+  1: { bg: 'bg-stone-500/10', text: 'text-stone-400', border: 'border-stone-500/30' },
+  2: { bg: 'bg-emerald-600/10', text: 'text-emerald-400', border: 'border-emerald-600/30' },
+  3: { bg: 'bg-amber-600/10', text: 'text-amber-500 dark:text-amber-400', border: 'border-amber-600/30' },
+  4: { bg: 'bg-orange-600/10', text: 'text-orange-500 dark:text-orange-400', border: 'border-orange-600/30' },
+  5: { bg: 'bg-rose-600/10', text: 'text-rose-500 dark:text-rose-400', border: 'border-rose-600/30' },
+  6: { bg: 'bg-amber-500/15', text: 'text-amber-300 font-semibold', border: 'border-amber-400/40' },
+  7: { bg: 'bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-rose-500/20', text: 'text-amber-300 font-bold', border: 'border-amber-400/50' },
 };

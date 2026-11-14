@@ -32,8 +32,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-background-surface border border-border rounded-2xl p-6 sm:p-8 shadow-2xl shadow-purple-950/20 text-foreground animate-slide-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-md bg-background-surface border border-border rounded-2xl p-6 sm:p-8 shadow-2xl shadow-orange-950/20 text-foreground animate-slide-up">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -45,8 +45,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-purple-600/10 border border-purple-500/30 mb-3 text-purple-400">
-            <Sparkles className="w-6 h-6 text-purple-400" />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/30 mb-3 text-orange-500 dark:text-orange-400">
+            <Sparkles className="w-6 h-6 text-orange-500 dark:text-orange-400" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight">Join INKVERSE</h2>
           <p className="text-sm text-foreground-muted mt-1">
@@ -60,7 +60,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
             onClick={() => setTab('oauth')}
             className={`flex-1 pb-3 text-sm font-medium transition-colors border-b-2 ${
               tab === 'oauth'
-                ? 'border-purple-500 text-purple-400'
+                ? 'border-primary text-primary'
                 : 'border-transparent text-foreground-muted hover:text-foreground'
             }`}
           >
@@ -70,7 +70,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
             onClick={() => setTab('demo')}
             className={`flex-1 pb-3 text-sm font-medium transition-colors border-b-2 ${
               tab === 'demo'
-                ? 'border-purple-500 text-purple-400'
+                ? 'border-primary text-primary'
                 : 'border-transparent text-foreground-muted hover:text-foreground'
             }`}
           >
@@ -83,7 +83,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
             {/* Google OAuth */}
             <button
               onClick={() => handleOAuth('google')}
-              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle font-medium transition-all duration-150 hover:border-purple-500/40"
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle font-medium transition-all duration-150 hover:border-orange-500/40"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -109,7 +109,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
             {/* GitHub OAuth */}
             <button
               onClick={() => handleOAuth('github')}
-              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle font-medium transition-all duration-150 hover:border-purple-500/40"
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle font-medium transition-all duration-150 hover:border-orange-500/40"
             >
               <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
@@ -121,7 +121,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
               Prefer testing without configuring OAuth secrets? Use the{' '}
               <button
                 onClick={() => setTab('demo')}
-                className="text-purple-400 hover:underline font-medium"
+                className="text-orange-600 dark:text-orange-400 hover:underline font-medium"
               >
                 Instant Demo Access
               </button>{' '}
@@ -138,20 +138,20 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
             <button
               onClick={() => handleDemoLogin('admin', 'shreeharsha')}
               disabled={isLoggingIn}
-              className="w-full flex items-center gap-3.5 p-3 rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-left transition-all group"
+              className="w-full flex items-center gap-3.5 p-3 rounded-xl border border-orange-500/30 bg-orange-500/10 hover:bg-orange-500/20 text-left transition-all group"
             >
-              <div className="w-10 h-10 rounded-lg bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-400 shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-orange-600/20 border border-orange-500/40 flex items-center justify-center text-orange-500 dark:text-orange-400 shrink-0">
                 <Shield className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm group-hover:text-purple-300">Shree Harsha</span>
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/30 text-purple-300 uppercase">
+                  <span className="font-semibold text-sm group-hover:text-orange-500 dark:group-hover:text-orange-300">Shree Harsha</span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-500/30 text-orange-300 uppercase">
                     Admin
                   </span>
                 </div>
                 <p className="text-xs text-foreground-muted truncate">
-                  Full admin dashboard, moderation, points configuration & reversal
+                  Full admin dashboard, moderation, points configuration &amp; reversal
                 </p>
               </div>
             </button>
@@ -160,20 +160,20 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
             <button
               onClick={() => handleDemoLogin('user', 'elena_writes')}
               disabled={isLoggingIn}
-              className="w-full flex items-center gap-3.5 p-3 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle text-left transition-all group hover:border-purple-500/30"
+              className="w-full flex items-center gap-3.5 p-3 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle text-left transition-all group hover:border-orange-500/30"
             >
               <div className="w-10 h-10 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shrink-0">
                 <PenTool className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm group-hover:text-purple-300">Elena Rostova</span>
+                  <span className="font-semibold text-sm group-hover:text-orange-500 dark:group-hover:text-orange-300">Elena Rostova</span>
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/30 text-blue-300 uppercase">
                     Author
                   </span>
                 </div>
                 <p className="text-xs text-foreground-muted truncate">
-                  Staff Writer, Level 5 Expert, rich editor & author analytics
+                  Staff Writer, Level 5 Expert, rich editor &amp; author analytics
                 </p>
               </div>
             </button>
@@ -182,20 +182,20 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, default
             <button
               onClick={() => handleDemoLogin('user', 'alex_reader')}
               disabled={isLoggingIn}
-              className="w-full flex items-center gap-3.5 p-3 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle text-left transition-all group hover:border-purple-500/30"
+              className="w-full flex items-center gap-3.5 p-3 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle text-left transition-all group hover:border-orange-500/30"
             >
               <div className="w-10 h-10 rounded-lg bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
                 <User className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm group-hover:text-purple-300">Alex Vance</span>
+                  <span className="font-semibold text-sm group-hover:text-orange-500 dark:group-hover:text-orange-300">Alex Vance</span>
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/30 text-emerald-300 uppercase">
                     Reader
                   </span>
                 </div>
                 <p className="text-xs text-foreground-muted truncate">
-                  New community member, test following, reactions & comments
+                  New community member, test following, reactions &amp; comments
                 </p>
               </div>
             </button>

@@ -26,7 +26,7 @@ export const App: React.FC = () => {
     <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
-          <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors selection:bg-purple-600/30 selection:text-purple-200">
+          <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors selection:bg-primary/30 selection:text-amber-200">
             <Navbar />
             <main className="flex-1">
               <Routes>

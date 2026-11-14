@@ -114,11 +114,11 @@ export const ExplorePage: React.FC = () => {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Search by title, topics, keywords or author username..."
-            className="w-full pl-12 pr-28 py-3.5 rounded-2xl border border-border bg-background-surface text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-purple-500/50 shadow-sm transition-all"
+            className="w-full pl-12 pr-28 py-3.5 rounded-2xl border border-border bg-background-surface text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-orange-500/50 shadow-sm transition-all"
           />
           <button
             type="submit"
-            className="absolute right-2 px-5 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition-colors"
+            className="absolute right-2 px-5 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white transition-colors"
           >
             Search
           </button>
@@ -130,7 +130,7 @@ export const ExplorePage: React.FC = () => {
             onClick={() => handleCategorySelect('')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-colors border ${
               !currentCategory
-                ? 'bg-purple-600 text-white border-purple-600'
+                ? 'bg-primary text-white border-primary'
                 : 'border-border bg-background-surface hover:bg-background-elevated text-foreground-muted'
             }`}
           >
@@ -142,7 +142,7 @@ export const ExplorePage: React.FC = () => {
               onClick={() => handleCategorySelect(cat.slug)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-colors border ${
                 currentCategory === cat.slug
-                  ? 'bg-purple-600 text-white border-purple-600'
+                  ? 'bg-primary text-white border-primary'
                   : 'border-border bg-background-surface hover:bg-background-elevated text-foreground-muted'
               }`}
             >
@@ -171,7 +171,7 @@ export const ExplorePage: React.FC = () => {
                   onClick={() => handleSortChange(s.id)}
                   className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                     currentSort === s.id
-                      ? 'bg-purple-600/20 text-purple-300 font-semibold'
+                      ? 'bg-orange-500/20 text-orange-600 dark:text-orange-300 font-semibold'
                       : 'text-foreground-muted hover:text-foreground'
                   }`}
                 >
@@ -205,7 +205,7 @@ export const ExplorePage: React.FC = () => {
               setSearchInput('');
               setSearchParams({});
             }}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white"
           >
             Clear all filters
           </button>

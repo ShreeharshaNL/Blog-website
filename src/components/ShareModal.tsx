@@ -55,7 +55,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ blog, isOpen, onClose })
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-border mb-5">
           <div className="flex items-center gap-2">
-            <Share2 className="w-5 h-5 text-purple-400" />
+            <Share2 className="w-5 h-5 text-primary" />
             <h3 className="font-bold text-base">Share this Story</h3>
           </div>
           <button
@@ -104,9 +104,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({ blog, isOpen, onClose })
             href={shareUrls.x}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle hover:border-purple-500/40 transition-colors text-center group"
+            className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle hover:border-primary/40 transition-colors text-center group"
           >
-            <div className="w-8 h-8 rounded-full bg-purple-500/10 text-foreground flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
               <span className="font-bold text-sm">𝕏</span>
             </div>
             <span className="text-xs font-medium">X / Twitter</span>
@@ -153,7 +153,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ blog, isOpen, onClose })
           />
           <button
             onClick={copyToClipboard}
-            className="absolute right-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition-colors flex items-center gap-1"
+            className="absolute right-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary hover:bg-primary-hover text-white transition-colors flex items-center gap-1 shadow-sm shadow-primary/20"
           >
             {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? 'Copied!' : 'Copy'}</span>
@@ -169,7 +169,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({ blog, isOpen, onClose })
           <div className="mt-3 pt-3 border-t border-border text-center">
             <button
               onClick={shareNative}
-              className="text-xs text-purple-400 hover:underline font-medium"
+              className="text-xs text-primary hover:underline font-medium"
             >
               Use device system share sheet
             </button>

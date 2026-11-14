@@ -201,7 +201,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
                   {comment.author.display_name}
                 </span>
                 {comment.author_id === blogAuthorId && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300">
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-600 dark:text-orange-400">
                     Author
                   </span>
                 )}
@@ -232,7 +232,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
                   setEditingId(comment.id);
                   setEditText(comment.content);
                 }}
-                className="p-1 text-foreground-subtle hover:text-purple-400 transition-colors"
+                className="p-1 text-foreground-subtle hover:text-primary transition-colors"
                 title="Edit comment"
               >
                 <Edit2 className="w-3.5 h-3.5" />
@@ -255,7 +255,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
               rows={2}
               value={editText}
               onChange={(e) => setEditText(e.target.value)}
-              className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+              className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-orange-500"
             />
             <div className="flex items-center gap-2 justify-end">
               <button
@@ -266,7 +266,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
               </button>
               <button
                 onClick={() => handleSaveEdit(comment.id)}
-                className="px-3 py-1 text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
+                className="px-3 py-1 text-xs font-semibold bg-primary hover:bg-orange-600 text-white rounded-lg"
               >
                 Save
               </button>
@@ -304,7 +304,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
                 setReplyingTo(replyingTo === comment.id ? null : comment.id);
                 setReplyText('');
               }}
-              className="flex items-center gap-1 hover:text-purple-400 transition-colors"
+              className="flex items-center gap-1 hover:text-primary transition-colors"
             >
               <Reply className="w-3.5 h-3.5" />
               <span>Reply</span>
@@ -320,7 +320,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               placeholder={`Replying to @${comment.author.username}...`}
-              className="w-full text-xs p-2 rounded-lg border border-border bg-background-surface text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+              className="w-full text-xs p-2 rounded-lg border border-border bg-background-surface text-foreground focus:outline-none focus:ring-1 focus:ring-orange-500"
             />
             <div className="flex items-center justify-end gap-2 mt-2">
               <button
@@ -331,7 +331,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
               </button>
               <button
                 onClick={() => handleReplySubmit(comment.id)}
-                className="px-3 py-1 text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
+                className="px-3 py-1 text-xs font-semibold bg-primary hover:bg-orange-600 text-white rounded-lg"
               >
                 Post Reply
               </button>
@@ -353,7 +353,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
     <section className="pt-10 mt-12 border-t border-border">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-serif text-2xl font-bold flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-purple-400" />
+          <MessageSquare className="w-5 h-5 text-primary" />
           <span>Responses ({comments.length})</span>
         </h3>
       </div>
@@ -361,7 +361,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
       {/* Main Comment Input */}
       {user ? (
         <form onSubmit={handleSubmitComment} className="mb-8">
-          <div className="p-3.5 rounded-2xl bg-background-surface border border-border focus-within:border-purple-500/50 shadow-sm transition-colors">
+          <div className="p-3.5 rounded-2xl bg-background-surface border border-border focus-within:border-orange-500/50 shadow-sm transition-colors">
             <textarea
               rows={3}
               value={newComment}
@@ -384,7 +384,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting || !newComment.trim()}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition-all disabled:opacity-40"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white transition-all disabled:opacity-40"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>{isSubmitting ? 'Posting...' : 'Respond'}</span>
@@ -400,7 +400,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
           </p>
           <button
             onClick={onOpenLogin}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition-colors"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white transition-colors"
           >
             Sign in to Comment
           </button>

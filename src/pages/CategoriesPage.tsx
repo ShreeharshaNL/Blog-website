@@ -25,7 +25,7 @@ export const CategoriesPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       <div className="max-w-3xl">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 border border-purple-500/20 text-purple-300 mb-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-orange-500/10 border border-orange-500/30 text-amber-500 dark:text-amber-400 mb-3">
           <Grid className="w-3.5 h-3.5" />
           <span>Knowledge Spectrum</span>
         </div>
@@ -42,19 +42,19 @@ export const CategoriesPage: React.FC = () => {
           <Link
             key={cat.id}
             to={`/categories/${cat.slug}`}
-            className="group relative rounded-2xl border border-border bg-background-surface hover:bg-background-elevated hover:border-purple-500/40 p-6 transition-all duration-300 flex flex-col justify-between shadow-sm hover:shadow-xl hover:shadow-purple-950/20"
+            className="group relative rounded-2xl border border-border bg-background-surface hover:bg-background-elevated hover:border-orange-500/40 p-6 transition-all duration-300 flex flex-col justify-between shadow-sm hover:shadow-xl hover:shadow-orange-950/20"
           >
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Compass className="w-5 h-5" />
                 </div>
-                <span className="text-xs font-mono font-semibold text-purple-400 px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20">
+                <span className="text-xs font-mono font-semibold text-orange-600 dark:text-orange-400 px-2 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20">
                   {cat.blog_count || 0} stories
                 </span>
               </div>
 
-              <h3 className="font-serif text-xl font-bold text-foreground group-hover:text-purple-300 transition-colors mb-2">
+              <h3 className="font-serif text-xl font-bold text-foreground group-hover:text-primary transition-colors mb-2">
                 {cat.name}
               </h3>
               <p className="text-xs text-foreground-muted leading-relaxed line-clamp-2">
@@ -62,7 +62,7 @@ export const CategoriesPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="pt-4 mt-4 border-t border-border/60 flex items-center justify-between text-xs font-semibold text-purple-400 group-hover:text-purple-300">
+            <div className="pt-4 mt-4 border-t border-border/60 flex items-center justify-between text-xs font-semibold text-primary group-hover:text-orange-500">
               <span>Explore category</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>

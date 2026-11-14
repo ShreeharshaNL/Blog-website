@@ -169,14 +169,14 @@ export const WritePage: React.FC = () => {
   if (!user) {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center">
-        <Sparkles className="w-10 h-10 text-purple-400 mx-auto mb-4" />
+        <Sparkles className="w-10 h-10 text-amber-500 dark:text-amber-400 mx-auto mb-4" />
         <h2 className="font-serif text-3xl font-bold mb-3">Sign in to Publish</h2>
         <p className="text-sm text-foreground-muted mb-6">
           You need an account to write and publish stories on INKVERSE.
         </p>
         <button
           onClick={() => navigate('/')}
-          className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-purple-600 text-white"
+          className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white"
         >
           Return to Homepage
         </button>
@@ -210,7 +210,7 @@ export const WritePage: React.FC = () => {
             onClick={() => setIsPreview(!isPreview)}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${
               isPreview
-                ? 'bg-purple-600/20 text-purple-300 border-purple-500/40'
+                ? 'bg-orange-500/20 text-orange-600 dark:text-orange-300 border-orange-500/40'
                 : 'border-border bg-background-surface hover:bg-background-elevated text-foreground-muted'
             }`}
           >
@@ -224,7 +224,7 @@ export const WritePage: React.FC = () => {
             onClick={() => setShowSettings(!showSettings)}
             className={`p-1.5 rounded-xl border transition-colors ${
               showSettings
-                ? 'bg-purple-600/20 text-purple-300 border-purple-500/40'
+                ? 'bg-orange-500/20 text-orange-600 dark:text-orange-300 border-orange-500/40'
                 : 'border-border bg-background-surface hover:bg-background-elevated text-foreground-muted'
             }`}
             title="Publishing Settings & SEO"
@@ -247,7 +247,7 @@ export const WritePage: React.FC = () => {
             type="button"
             onClick={() => handleSave('published')}
             disabled={isSaving}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-900/30 transition-all disabled:opacity-40"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white shadow-md shadow-orange-950/30 transition-all disabled:opacity-40"
           >
             <Send className="w-3.5 h-3.5" />
             <span>{isSaving ? 'Publishing...' : 'Publish'}</span>
@@ -259,7 +259,7 @@ export const WritePage: React.FC = () => {
       {isPreview ? (
         <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
           <div className="space-y-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-purple-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-primary">
               Preview Mode
             </span>
             <h1 className="font-serif text-4xl sm:text-5xl font-bold">{title || 'Untitled Article'}</h1>
@@ -297,7 +297,7 @@ export const WritePage: React.FC = () => {
 
           {/* Cover Image Input */}
           <div className="flex items-center gap-2 p-3 rounded-xl border border-border bg-background-surface">
-            <ImageIcon className="w-4 h-4 text-purple-400 shrink-0" />
+            <ImageIcon className="w-4 h-4 text-primary shrink-0" />
             <input
               type="url"
               value={coverImage}
@@ -327,7 +327,7 @@ export const WritePage: React.FC = () => {
       {showSettings && (
         <div className="p-6 rounded-2xl border border-border bg-background-surface space-y-6 animate-slide-up">
           <h3 className="font-semibold text-sm flex items-center gap-2">
-            <Settings className="w-4 h-4 text-purple-400" />
+            <Settings className="w-4 h-4 text-primary" />
             <span>Publishing Configuration &amp; SEO</span>
           </h3>
 
@@ -340,7 +340,7 @@ export const WritePage: React.FC = () => {
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+                className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-orange-500"
               >
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -374,7 +374,7 @@ export const WritePage: React.FC = () => {
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-mono bg-purple-600/20 text-purple-300"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-mono bg-orange-500/20 text-orange-600 dark:text-orange-300"
                 >
                   #{tag}
                   <button
@@ -405,7 +405,7 @@ export const WritePage: React.FC = () => {
               Scheduled Publishing Date (Optional)
             </label>
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-purple-400" />
+              <Calendar className="w-4 h-4 text-primary" />
               <input
                 type="datetime-local"
                 value={scheduledDate}

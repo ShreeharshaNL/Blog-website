@@ -43,7 +43,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             {blog.category && (
-              <span className="text-[10px] font-semibold text-purple-400 uppercase tracking-wider">
+              <span className="text-[10px] font-semibold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
                 {blog.category.name}
               </span>
             )}
@@ -52,7 +52,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
             </span>
           </div>
           <Link to={`/blog/${blog.slug}`}>
-            <h4 className="font-semibold text-sm line-clamp-2 text-foreground group-hover:text-purple-400 transition-colors">
+            <h4 className="font-semibold text-sm line-clamp-2 text-foreground group-hover:text-primary transition-colors">
               {blog.title}
             </h4>
           </Link>
@@ -70,7 +70,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
 
   if (variant === 'featured') {
     return (
-      <article className="group relative rounded-2xl overflow-hidden border border-border bg-background-surface hover:border-purple-500/40 transition-all duration-300 shadow-xl hover:shadow-purple-950/20 grid grid-cols-1 md:grid-cols-12">
+      <article className="group relative rounded-2xl overflow-hidden border border-border bg-background-surface hover:border-orange-500/40 transition-all duration-300 shadow-xl hover:shadow-orange-950/20 grid grid-cols-1 md:grid-cols-12">
         <div className="md:col-span-7 relative aspect-[16/10] md:aspect-auto overflow-hidden bg-background-subtle">
           <img
             src={defaultCover}
@@ -80,7 +80,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent md:hidden" />
           {blog.is_editor_pick && (
-            <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-600/90 text-white backdrop-blur-md shadow-lg shadow-purple-900/40">
+            <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white backdrop-blur-md shadow-lg shadow-orange-900/40">
               <Award className="w-3.5 h-3.5" />
               <span>Editor's Pick</span>
             </div>
@@ -91,7 +91,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
           <div>
             <div className="flex items-center justify-between mb-3">
               {blog.category && (
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
                   {blog.category.name}
                 </span>
               )}
@@ -102,7 +102,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
             </div>
 
             <Link to={`/blog/${blog.slug}`}>
-              <h3 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-foreground group-hover:text-purple-300 transition-colors mb-3 leading-snug">
+              <h3 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors mb-3 leading-snug">
                 {blog.title}
               </h3>
             </Link>
@@ -124,10 +124,10 @@ export const BlogCard: React.FC<BlogCardProps> = ({
                     `https://api.dicebear.com/7.x/identicon/svg?seed=${blog.author?.username}`
                   }
                   alt={blog.author?.display_name}
-                  className="w-9 h-9 rounded-full object-cover border border-border group-hover/author:border-purple-400"
+                  className="w-9 h-9 rounded-full object-cover border border-border group-hover/author:border-orange-500"
                 />
                 <div>
-                  <p className="text-xs font-semibold group-hover/author:text-purple-400 transition-colors">
+                  <p className="text-xs font-semibold group-hover/author:text-primary transition-colors">
                     {blog.author?.display_name}
                   </p>
                   <p className="text-[11px] text-foreground-subtle font-mono">{publishedDate}</p>
@@ -153,7 +153,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
 
   // Standard Card
   return (
-    <article className="group flex flex-col rounded-2xl overflow-hidden border border-border bg-background-surface hover:border-purple-500/40 hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-purple-950/20">
+    <article className="group flex flex-col rounded-2xl overflow-hidden border border-border bg-background-surface hover:border-orange-500/40 hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-orange-950/20">
       {/* Cover Image */}
       <div className="relative aspect-[16/10] overflow-hidden bg-background-subtle">
         <Link to={`/blog/${blog.slug}`}>
@@ -165,8 +165,8 @@ export const BlogCard: React.FC<BlogCardProps> = ({
           />
         </Link>
         {blog.is_editor_pick && (
-          <div className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-600/90 text-white backdrop-blur-md shadow-md">
-            <Award className="w-3 h-3" />
+          <div className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white backdrop-blur-md shadow-md">
+            <Award className="w-3.5 h-3.5" />
             <span>Editor's Pick</span>
           </div>
         )}
@@ -183,13 +183,13 @@ export const BlogCard: React.FC<BlogCardProps> = ({
           <div className="flex items-center justify-between text-xs text-foreground-subtle mb-2 font-mono">
             <span>{publishedDate}</span>
             <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
+              <Clock className="w-3.5 h-3.5" />
               <span>{blog.reading_time_minutes} min read</span>
             </span>
           </div>
 
           <Link to={`/blog/${blog.slug}`}>
-            <h3 className="font-serif font-bold text-lg leading-snug text-foreground group-hover:text-purple-400 transition-colors line-clamp-2 mb-2">
+            <h3 className="font-serif font-bold text-lg leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
               {blog.title}
             </h3>
           </Link>
@@ -211,20 +211,20 @@ export const BlogCard: React.FC<BlogCardProps> = ({
                 `https://api.dicebear.com/7.x/identicon/svg?seed=${blog.author?.username}`
               }
               alt={blog.author?.display_name}
-              className="w-7 h-7 rounded-full object-cover border border-border group-hover/author:border-purple-400 shrink-0"
+              className="w-7 h-7 rounded-full object-cover border border-border group-hover/author:border-orange-500 shrink-0"
             />
-            <span className="text-xs font-medium text-foreground truncate group-hover/author:text-purple-400 transition-colors">
+            <span className="text-xs font-medium text-foreground truncate group-hover/author:text-primary transition-colors">
               {blog.author?.display_name}
             </span>
           </Link>
 
           <div className="flex items-center gap-2.5 text-xs text-foreground-muted font-mono shrink-0">
             <span className="flex items-center gap-1" title="Views">
-              <Eye className="w-3 h-3 text-foreground-subtle" />
+              <Eye className="w-3.5 h-3.5 text-foreground-subtle" />
               <span>{blog.view_count.toLocaleString()}</span>
             </span>
             <span className="flex items-center gap-1 text-rose-400" title="Likes">
-              <Heart className="w-3 h-3 fill-rose-400/20" />
+              <Heart className="w-3.5 h-3.5 fill-rose-400/20" />
               <span>{blog.like_count}</span>
             </span>
           </div>

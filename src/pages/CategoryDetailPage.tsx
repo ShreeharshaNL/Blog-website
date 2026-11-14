@@ -37,7 +37,7 @@ export const CategoryDetailPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       <Link
         to="/categories"
-        className="inline-flex items-center gap-1.5 text-xs text-foreground-muted hover:text-purple-400 font-semibold transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs text-foreground-muted hover:text-primary font-semibold transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>All Categories</span>
@@ -67,7 +67,7 @@ export const CategoryDetailPage: React.FC = () => {
           </p>
           <Link
             to="/write"
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white"
           >
             Write the First Story
           </Link>
