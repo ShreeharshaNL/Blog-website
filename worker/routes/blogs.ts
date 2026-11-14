@@ -79,6 +79,7 @@ blogsApp.get('/', async (c) => {
     SELECT
       b.id, b.title, b.slug, b.description, b.cover_image, b.published_at,
       b.reading_time_minutes, b.word_count, b.view_count, b.like_count, b.is_editor_pick, b.is_featured,
+      (SELECT COUNT(*) FROM comments cm WHERE cm.blog_id = b.id) as comment_count,
       u.id as author_id, u.username as author_username, u.display_name as author_name,
       u.avatar_url as author_avatar, u.points as author_points, u.level as author_level,
       c.id as category_id, c.name as category_name, c.slug as category_slug, c.color as category_color
@@ -114,6 +115,7 @@ blogsApp.get('/', async (c) => {
     word_count: b.word_count,
     view_count: b.view_count,
     like_count: b.like_count,
+    comment_count: b.comment_count || 0,
     is_editor_pick: Boolean(b.is_editor_pick),
     is_featured: Boolean(b.is_featured),
     author: {
@@ -173,6 +175,7 @@ blogsApp.get('/trending', async (c) => {
     reading_time_minutes: b.reading_time_minutes,
     view_count: b.view_count,
     like_count: b.like_count,
+    comment_count: b.comment_count || 0,
     is_editor_pick: Boolean(b.is_editor_pick),
     author: {
       id: b.author_id,

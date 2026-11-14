@@ -75,6 +75,7 @@ export interface Blog {
   word_count: number;
   view_count: number;
   like_count: number;
+  comment_count?: number;
   dislike_count?: number; // Only returned if request is by blog author AND author has show_dislike_stats=true
   is_editor_pick: boolean;
   is_featured: boolean;

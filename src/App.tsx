@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
-import { Footer } from './components/Footer';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -58,7 +57,6 @@ export const App: React.FC = () => {
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>
-            <Footer />
           </div>
         </BrowserRouter>
       </AuthProvider>
