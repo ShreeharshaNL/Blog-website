@@ -59,18 +59,9 @@ export const HomePage: React.FC = () => {
   return (
     <div className="space-y-20 pb-16">
       {/* 1. HERO SECTION WITH RETRO SUNSET DESERT BACKDROP */}
-      <section className="relative pt-16 md:pt-24 pb-16 md:pb-24 overflow-hidden rounded-3xl mx-2 sm:mx-4 border border-orange-500/20 bg-background-surface mt-2 shadow-2xl">
-        {/* Layered Waves Artwork Background from Reference Image */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <img
-            src="/hero-backdrop.jpg"
-            alt="Warm desert sunset waves"
-            className="w-full h-full object-cover object-right md:object-right-bottom opacity-55 dark:opacity-70 filter saturate-125 contrast-110"
-          />
-          {/* Smooth gradients so typography retains pristine readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-background-surface via-background-surface/85 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background-surface via-transparent to-background-surface/50" />
-        </div>
+      <section className="relative pt-16 md:pt-28 pb-16 md:pb-24 overflow-hidden rounded-3xl mx-2 sm:mx-4 border border-orange-500/20 bg-background-surface/30 backdrop-blur-[2px] mt-2 shadow-2xl">
+        {/* Subtle warm glow enhancement */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-orange-500/5 via-transparent to-amber-500/5" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4 sm:px-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-orange-500/10 border border-orange-500/30 text-amber-500 dark:text-amber-400 mb-6 backdrop-blur-sm animate-fade-in shadow-sm">
