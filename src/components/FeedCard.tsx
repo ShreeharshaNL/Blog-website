@@ -89,7 +89,7 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
 
   return (
     <>
-      <article className="group bg-background-surface border border-border rounded-xl hover:border-stone-500/40 dark:hover:border-stone-600/50 transition-colors duration-200 overflow-hidden">
+      <article className="group bg-background-surface/90 backdrop-blur-sm border border-border/80 rounded-xl hover:border-stone-500/50 dark:hover:border-stone-600/60 transition-colors duration-200 overflow-hidden shadow-sm">
         <div className="p-5 sm:p-6 space-y-3.5">
           {/* Author Header */}
           <div className="flex items-center justify-between gap-3">

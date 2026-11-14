@@ -25,9 +25,21 @@ export const App: React.FC = () => {
     <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
-          <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors selection:bg-primary/20 selection:text-primary">
+          <div className="relative flex flex-col min-h-screen bg-background text-foreground transition-colors selection:bg-primary/20 selection:text-primary">
+            {/* Global Desert Sunset Waves Background */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+              <img
+                src="/hero-backdrop.jpg"
+                alt="INKVERSE Wallpaper Background"
+                className="w-full h-full object-cover object-right-top md:object-center opacity-40 dark:opacity-65 filter saturate-110"
+              />
+              {/* Directional vignettes ensuring 100% text readability on feed */}
+              <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/50 to-background/20 dark:from-background/80 dark:via-background/45 dark:to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/80" />
+            </div>
+
             <Navbar />
-            <main className="flex-1">
+            <main className="flex-1 relative z-10">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/explore" element={<ExplorePage />} />

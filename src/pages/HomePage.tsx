@@ -257,7 +257,7 @@ export const HomePage: React.FC = () => {
         {/* ========================================================= */}
         <aside className="hidden lg:block lg:col-span-4 sticky top-20 space-y-5 self-start">
           {/* Feed Switcher */}
-          <div className="rounded-xl border border-border bg-background-surface p-4 space-y-2.5">
+          <div className="rounded-xl border border-border/80 bg-background-surface/90 backdrop-blur-sm p-4 space-y-2.5 shadow-sm">
             <h3 className="text-[11px] font-semibold uppercase tracking-wider text-foreground-subtle">
               Feed
             </h3>
@@ -287,7 +287,7 @@ export const HomePage: React.FC = () => {
 
           {/* Topics */}
           {categories.length > 0 && (
-            <div className="rounded-xl border border-border bg-background-surface p-4 space-y-2.5">
+            <div className="rounded-xl border border-border/80 bg-background-surface/90 backdrop-blur-sm p-4 space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <h3 className="text-[11px] font-semibold uppercase tracking-wider text-foreground-subtle">
                   Topics
@@ -335,7 +335,7 @@ export const HomePage: React.FC = () => {
 
           {/* Top Creators */}
           {topWriters.length > 0 && (
-            <div className="rounded-xl border border-border bg-background-surface p-4 space-y-3">
+            <div className="rounded-xl border border-border/80 bg-background-surface/90 backdrop-blur-sm p-4 space-y-3 shadow-sm">
               <div className="flex items-center justify-between border-b border-border pb-2">
                 <h3 className="text-[11px] font-semibold uppercase tracking-wider text-foreground-subtle">
                   Writers to Follow
@@ -381,7 +381,7 @@ export const HomePage: React.FC = () => {
           )}
 
           {/* Minimal Writer CTA */}
-          <div className="rounded-xl border border-border bg-background-surface p-4 space-y-2.5">
+          <div className="rounded-xl border border-border/80 bg-background-surface/90 backdrop-blur-sm p-4 space-y-2.5 shadow-sm">
             <h4 className="font-serif font-bold text-sm text-foreground">
               Write on INKVERSE
             </h4>
