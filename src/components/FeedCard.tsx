@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, MessageSquare, Bookmark, Share2, Eye, Clock, Award, Check } from 'lucide-react';
+import { Heart, MessageSquare, Bookmark, Share2, Eye, Clock, Award } from 'lucide-react';
 import { Blog } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { apiRequest } from '../utils/api';
@@ -20,7 +20,6 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
   const [isLiking, setIsLiking] = useState(false);
   const [isBookmarking, setIsBookmarking] = useState(false);
 
-  // Time display
   const timeDisplay = blog.published_at
     ? new Date(blog.published_at).toLocaleDateString(undefined, {
         month: 'short',
@@ -32,7 +31,6 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
     blog.cover_image ||
     'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80';
 
-  // Toggle Like reaction inline
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -42,7 +40,6 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
     }
     if (isLiking) return;
 
-    // Optimistic UI update
     const previousLiked = isLiked;
     const previousLikes = likes;
     setIsLiked(!previousLiked);
@@ -55,7 +52,6 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
         body: JSON.stringify({ type: 'like' }),
       });
     } catch (err) {
-      // Revert if request fails
       setIsLiked(previousLiked);
       setLikes(previousLikes);
     } finally {
@@ -63,7 +59,6 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
     }
   };
 
-  // Toggle Bookmark inline
   const handleBookmark = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -94,145 +89,123 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
 
   return (
     <>
-      <article className="group relative rounded-2xl sm:rounded-3xl border border-border/80 bg-background-surface/85 backdrop-blur-md hover:border-orange-500/40 transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-orange-950/15 overflow-hidden">
-        <div className="p-5 sm:p-7 space-y-4">
-          {/* 1. AUTHOR & POST CONTEXT HEADER */}
+      <article className="group bg-background-surface border border-border rounded-xl hover:border-stone-500/40 dark:hover:border-stone-600/50 transition-colors duration-200 overflow-hidden">
+        <div className="p-5 sm:p-6 space-y-3.5">
+          {/* Author Header */}
           <div className="flex items-center justify-between gap-3">
-            <Link
-              to={`/@${blog.author?.username}`}
-              className="flex items-center gap-3 group/author min-w-0"
-            >
-              <img
-                src={
-                  blog.author?.avatar_url ||
-                  `https://api.dicebear.com/7.x/identicon/svg?seed=${blog.author?.username}`
-                }
-                alt={blog.author?.display_name}
-                className="w-10 h-10 rounded-full object-cover border border-border group-hover/author:border-orange-500 transition-colors shrink-0"
-                loading="lazy"
-              />
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="font-semibold text-sm text-foreground group-hover/author:text-primary transition-colors truncate">
-                    {blog.author?.display_name}
-                  </span>
-                  <span className="text-xs text-foreground-subtle font-mono truncate">
-                    @{blog.author?.username}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-[11px] text-foreground-subtle font-mono">
-                  <span>{timeDisplay}</span>
-                  <span>·</span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    <span>{blog.reading_time_minutes}m read</span>
-                  </span>
-                </div>
+            <div className="flex items-center gap-2.5 min-w-0">
+              <Link to={`/@${blog.author?.username}`} className="shrink-0">
+                <img
+                  src={
+                    blog.author?.avatar_url ||
+                    `https://api.dicebear.com/7.x/identicon/svg?seed=${blog.author?.username}`
+                  }
+                  alt={blog.author?.display_name}
+                  className="w-8 h-8 rounded-full object-cover border border-border"
+                  loading="lazy"
+                />
+              </Link>
+              <div className="flex items-center gap-1.5 text-xs truncate">
+                <Link
+                  to={`/@${blog.author?.username}`}
+                  className="font-medium text-foreground hover:underline truncate"
+                >
+                  {blog.author?.display_name}
+                </Link>
+                <span className="text-foreground-subtle">·</span>
+                <span className="text-foreground-subtle whitespace-nowrap">{timeDisplay}</span>
+                <span className="text-foreground-subtle">·</span>
+                <span className="text-foreground-subtle whitespace-nowrap">{blog.reading_time_minutes} min read</span>
               </div>
-            </Link>
+            </div>
 
             <div className="flex items-center gap-2 shrink-0">
               {blog.category && (
                 <Link
                   to={`/categories/${blog.category.slug}`}
-                  className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 transition-colors"
+                  className="text-[11px] font-medium text-primary hover:underline px-2 py-0.5 rounded bg-primary/10 border border-primary/20"
                 >
                   {blog.category.name}
                 </Link>
               )}
-              {blog.is_editor_pick && (
-                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-sm">
-                  <Award className="w-3 h-3" />
-                  <span>Editor's Pick</span>
-                </span>
-              )}
             </div>
           </div>
 
-          {/* 2. TITLE & EXCERPT */}
-          <div className="space-y-2">
-            <Link to={`/blog/${blog.slug}`} className="block group/title">
-              <h2 className="font-serif text-xl sm:text-2xl md:text-[26px] font-bold leading-snug tracking-tight text-foreground group-hover/title:text-primary transition-colors">
+          {/* Title & Description */}
+          <div className="space-y-1.5">
+            <Link to={`/blog/${blog.slug}`} className="block">
+              <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-foreground hover:text-primary transition-colors leading-snug">
                 {blog.title}
               </h2>
             </Link>
-            <p className="text-sm text-foreground-muted leading-relaxed line-clamp-3 font-sans">
+            <p className="text-sm text-foreground-muted leading-relaxed line-clamp-2">
               {blog.description}
             </p>
           </div>
 
-          {/* 3. COVER IMAGE */}
+          {/* Cover Image */}
           {blog.cover_image && (
             <Link
               to={`/blog/${blog.slug}`}
-              className="block relative aspect-[16/9] w-full rounded-2xl overflow-hidden bg-background-subtle group/img"
+              className="block relative aspect-[16/9] w-full rounded-lg overflow-hidden bg-background-subtle border border-border/50"
             >
               <img
                 src={defaultCover}
                 alt={blog.title}
-                className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-300"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity" />
             </Link>
           )}
 
-          {/* 4. INLINE ENGAGEMENT ACTION BAR (Instagram / Reddit style) */}
-          <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs text-foreground-muted">
-            <div className="flex items-center gap-4 sm:gap-6">
-              {/* Like Button */}
+          {/* Minimal hairline action bar */}
+          <div className="pt-3 border-t border-border flex items-center justify-between text-xs text-foreground-subtle">
+            <div className="flex items-center gap-5">
+              {/* Like */}
               <button
                 onClick={handleLike}
-                className={`flex items-center gap-1.5 py-1.5 px-2.5 rounded-xl transition-all duration-200 ${
-                  isLiked
-                    ? 'text-rose-500 bg-rose-500/10 font-semibold'
-                    : 'hover:text-rose-400 hover:bg-background-elevated'
+                className={`flex items-center gap-1.5 py-1 px-1.5 rounded transition-colors ${
+                  isLiked ? 'text-primary font-semibold' : 'hover:text-foreground'
                 }`}
                 title="Like story"
               >
-                <Heart
-                  className={`w-4 h-4 transition-transform ${
-                    isLiked ? 'fill-rose-500 scale-110' : ''
-                  }`}
-                />
+                <Heart className={`w-4 h-4 ${isLiked ? 'fill-primary text-primary' : ''}`} />
                 <span className="font-mono text-xs">{likes}</span>
               </button>
 
-              {/* Comments Button */}
+              {/* Comments */}
               <Link
                 to={`/blog/${blog.slug}#comments`}
-                className="flex items-center gap-1.5 py-1.5 px-2.5 rounded-xl hover:text-primary hover:bg-background-elevated transition-colors"
+                className="flex items-center gap-1.5 py-1 px-1.5 rounded hover:text-foreground transition-colors"
                 title="View discussion"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span className="font-mono text-xs">{blog.comment_count || 0}</span>
               </Link>
 
-              {/* View Count */}
-              <span className="hidden sm:flex items-center gap-1.5 py-1.5 px-2 text-foreground-subtle">
-                <Eye className="w-4 h-4" />
-                <span className="font-mono text-xs">{blog.view_count.toLocaleString()}</span>
+              {/* Views */}
+              <span className="flex items-center gap-1.5 py-1 px-1.5 font-mono">
+                <Eye className="w-3.5 h-3.5" />
+                <span>{blog.view_count.toLocaleString()}</span>
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5">
-              {/* Bookmark Button */}
+            <div className="flex items-center gap-2">
+              {/* Bookmark */}
               <button
                 onClick={handleBookmark}
-                className={`p-2 rounded-xl transition-colors ${
-                  isBookmarked
-                    ? 'text-amber-500 bg-amber-500/10'
-                    : 'text-foreground-subtle hover:text-foreground hover:bg-background-elevated'
+                className={`p-1.5 rounded hover:text-foreground transition-colors ${
+                  isBookmarked ? 'text-primary' : ''
                 }`}
                 title={isBookmarked ? 'Saved in reading list' : 'Save for later'}
               >
-                <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-amber-500' : ''}`} />
+                <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-primary' : ''}`} />
               </button>
 
-              {/* Share Button */}
+              {/* Share */}
               <button
                 onClick={handleShare}
-                className="p-2 rounded-xl text-foreground-subtle hover:text-foreground hover:bg-background-elevated transition-colors"
+                className="p-1.5 rounded hover:text-foreground transition-colors"
                 title="Share this story"
               >
                 <Share2 className="w-4 h-4" />
@@ -242,7 +215,6 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
         </div>
       </article>
 
-      {/* Share Modal */}
       <ShareModal
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}

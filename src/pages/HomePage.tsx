@@ -1,16 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Sparkles,
-  Flame,
-  Clock,
-  Heart,
   Compass,
   PenTool,
   Users,
-  ArrowRight,
-  TrendingUp,
   CheckCircle2,
+  Sparkles,
 } from 'lucide-react';
 import { Blog, Category, LeaderboardItem } from '../types';
 import { apiRequest } from '../utils/api';
@@ -26,7 +21,7 @@ export const HomePage: React.FC = () => {
   const [currentSort, setCurrentSort] = useState<'latest' | 'most_liked' | 'trending'>('latest');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   
-  // Infinite scroll state
+  // Infinite scroll
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
@@ -35,7 +30,7 @@ export const HomePage: React.FC = () => {
 
   const observerTarget = useRef<HTMLDivElement | null>(null);
 
-  // 1. Load Sidebar metadata (Categories & Top Creators) once
+  // Load Categories & Top Writers
   useEffect(() => {
     async function loadSidebarData() {
       try {
@@ -52,7 +47,7 @@ export const HomePage: React.FC = () => {
     loadSidebarData();
   }, []);
 
-  // 2. Load Initial Page of Blogs whenever sort or category changes
+  // Load Feed
   useEffect(() => {
     let isCancelled = false;
 
@@ -89,7 +84,7 @@ export const HomePage: React.FC = () => {
     };
   }, [currentSort, selectedCategory]);
 
-  // 3. Infinite Scroll: Load Next Page
+  // Load next page
   const loadNextPage = useCallback(async () => {
     if (isLoadingMore || page >= totalPages) return;
 
@@ -122,7 +117,7 @@ export const HomePage: React.FC = () => {
     }
   }, [isLoadingMore, page, totalPages, currentSort, selectedCategory]);
 
-  // 4. Setup Intersection Observer for seamless auto-scrolling
+  // Intersection Observer
   useEffect(() => {
     const target = observerTarget.current;
     if (!target) return;
@@ -145,97 +140,91 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      {/* Mobile Feed Filter Bar (Sticky, minimal, zero obstruction) */}
-      <div className="lg:hidden mb-6 flex items-center justify-between gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-border/60">
-        <div className="flex items-center gap-1.5 shrink-0">
+      {/* Mobile filter switcher */}
+      <div className="lg:hidden mb-5 flex items-center justify-between border-b border-border pb-3">
+        <div className="flex items-center gap-1">
           <button
             onClick={() => setCurrentSort('latest')}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
               currentSort === 'latest'
-                ? 'bg-primary text-white shadow-sm'
-                : 'bg-background-surface/80 text-foreground-muted hover:text-foreground border border-border/80'
+                ? 'bg-foreground text-background font-semibold'
+                : 'text-foreground-muted hover:text-foreground'
             }`}
           >
-            ⚡ Latest
+            Latest
           </button>
           <button
             onClick={() => setCurrentSort('most_liked')}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
               currentSort === 'most_liked'
-                ? 'bg-primary text-white shadow-sm'
-                : 'bg-background-surface/80 text-foreground-muted hover:text-foreground border border-border/80'
+                ? 'bg-foreground text-background font-semibold'
+                : 'text-foreground-muted hover:text-foreground'
             }`}
           >
-            ❤️ Most Liked
+            Most Liked
           </button>
           <button
             onClick={() => setCurrentSort('trending')}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
               currentSort === 'trending'
-                ? 'bg-primary text-white shadow-sm'
-                : 'bg-background-surface/80 text-foreground-muted hover:text-foreground border border-border/80'
+                ? 'bg-foreground text-background font-semibold'
+                : 'text-foreground-muted hover:text-foreground'
             }`}
           >
-            🔥 Trending
+            Trending
           </button>
         </div>
 
         {selectedCategory && (
           <button
             onClick={() => setSelectedCategory('')}
-            className="text-xs text-primary font-semibold shrink-0 hover:underline"
+            className="text-xs text-primary hover:underline font-medium"
           >
-            Clear topic
+            Reset filter
           </button>
         )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* ========================================================= */}
-        {/* LEFT / CENTER: CONTINUOUS STREAM FEED (Instagram/Reddit) */}
+        {/* MAIN FEED: MINIMAL ENDLESS STREAM */}
         {/* ========================================================= */}
-        <main className="lg:col-span-8 space-y-6">
+        <main className="lg:col-span-8 space-y-5">
           {isLoadingInitial ? (
-            /* Loading skeletons */
-            <div className="space-y-6">
+            <div className="space-y-4">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="rounded-3xl border border-border/60 bg-background-surface/60 p-6 space-y-4 animate-pulse"
+                  className="rounded-xl border border-border bg-background-surface p-6 space-y-3 animate-pulse"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-border/60" />
-                    <div className="space-y-1.5">
-                      <div className="w-28 h-3.5 rounded bg-border/60" />
-                      <div className="w-20 h-2.5 rounded bg-border/40" />
-                    </div>
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-border" />
+                    <div className="w-32 h-3 rounded bg-border" />
                   </div>
-                  <div className="w-3/4 h-6 rounded bg-border/60" />
-                  <div className="w-full h-12 rounded bg-border/40" />
-                  <div className="aspect-[16/9] w-full rounded-2xl bg-border/50" />
+                  <div className="w-3/4 h-5 rounded bg-border" />
+                  <div className="w-full h-10 rounded bg-border/60" />
+                  <div className="aspect-[16/9] w-full rounded-lg bg-border/40" />
                 </div>
               ))}
             </div>
           ) : blogs.length === 0 ? (
-            /* Empty state */
-            <div className="py-20 text-center rounded-3xl border border-dashed border-border bg-background-surface/40 p-8 space-y-3">
-              <Compass className="w-10 h-10 text-primary mx-auto opacity-70" />
-              <h3 className="font-serif text-xl font-bold">No stories found</h3>
+            <div className="py-20 text-center rounded-xl border border-border bg-background-surface p-8 space-y-3">
+              <Compass className="w-8 h-8 text-foreground-subtle mx-auto opacity-60" />
+              <h3 className="font-serif text-lg font-bold">No stories found</h3>
               <p className="text-xs text-foreground-muted max-w-sm mx-auto">
-                No published blogs match this filter yet. Be the first author to share your thoughts!
+                No published stories match this filter. Be the first author to publish!
               </p>
               {selectedCategory && (
                 <button
                   onClick={() => setSelectedCategory('')}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary text-white"
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-primary text-white"
                 >
                   Show All Topics
                 </button>
               )}
             </div>
           ) : (
-            /* Active Posts Stream */
-            <div className="space-y-6">
+            <div className="space-y-5">
               {blogs.map((blog) => (
                 <FeedCard
                   key={blog.id}
@@ -244,19 +233,18 @@ export const HomePage: React.FC = () => {
                 />
               ))}
 
-              {/* Infinite Scroll Trigger Sentinel */}
-              <div ref={observerTarget} className="py-4 text-center">
+              {/* Infinite Scroll Trigger */}
+              <div ref={observerTarget} className="py-6 text-center">
                 {isLoadingMore && (
-                  <div className="inline-flex items-center gap-2 py-2 px-4 rounded-full bg-background-surface/80 border border-border text-xs text-foreground-muted animate-pulse">
-                    <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
-                    <span>Loading more stories...</span>
-                  </div>
+                  <p className="text-xs text-foreground-subtle font-mono animate-pulse">
+                    Loading older stories...
+                  </p>
                 )}
 
                 {!isLoadingMore && page >= totalPages && blogs.length > 0 && (
-                  <div className="py-8 text-center text-xs text-foreground-subtle font-mono flex items-center justify-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary" />
-                    <span>You're all caught up with the latest community stories ✨</span>
+                  <div className="py-6 text-center text-xs text-foreground-subtle flex items-center justify-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                    <span>You're caught up with all stories</span>
                   </div>
                 )}
               </div>
@@ -265,73 +253,49 @@ export const HomePage: React.FC = () => {
         </main>
 
         {/* ========================================================= */}
-        {/* RIGHT SIDEBAR: SORTING, TOPICS & DISCOVERY (Clean & Minimal) */}
+        {/* RIGHT SIDEBAR: REFINED EDITORIAL DISCOVERY */}
         {/* ========================================================= */}
-        <aside className="hidden lg:block lg:col-span-4 sticky top-20 space-y-6 self-start">
-          {/* 1. Feed Sorting Box */}
-          <div className="rounded-3xl border border-border/80 bg-background-surface/85 backdrop-blur-md p-5 shadow-sm space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground-subtle">
-              Feed Stream
+        <aside className="hidden lg:block lg:col-span-4 sticky top-20 space-y-5 self-start">
+          {/* Feed Switcher */}
+          <div className="rounded-xl border border-border bg-background-surface p-4 space-y-2.5">
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-foreground-subtle">
+              Feed
             </h3>
-            <div className="flex flex-col gap-1.5">
-              <button
-                onClick={() => setCurrentSort('latest')}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                  currentSort === 'latest'
-                    ? 'bg-primary text-white shadow-sm shadow-primary/20'
-                    : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span>Latest Stories</span>
-                </div>
-                {currentSort === 'latest' && <span className="text-[10px] uppercase font-mono">Active</span>}
-              </button>
-
-              <button
-                onClick={() => setCurrentSort('most_liked')}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                  currentSort === 'most_liked'
-                    ? 'bg-primary text-white shadow-sm shadow-primary/20'
-                    : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <Heart className="w-4 h-4" />
-                  <span>Most Liked</span>
-                </div>
-                {currentSort === 'most_liked' && <span className="text-[10px] uppercase font-mono">Active</span>}
-              </button>
-
-              <button
-                onClick={() => setCurrentSort('trending')}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                  currentSort === 'trending'
-                    ? 'bg-primary text-white shadow-sm shadow-primary/20'
-                    : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <Flame className="w-4 h-4" />
-                  <span>Trending Momentum</span>
-                </div>
-                {currentSort === 'trending' && <span className="text-[10px] uppercase font-mono">Active</span>}
-              </button>
+            <div className="flex flex-col gap-1">
+              {[
+                { id: 'latest', label: 'Latest Stories' },
+                { id: 'most_liked', label: 'Most Liked' },
+                { id: 'trending', label: 'Trending' },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setCurrentSort(tab.id as any)}
+                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors text-left ${
+                    currentSort === tab.id
+                      ? 'bg-foreground text-background font-semibold'
+                      : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  {currentSort === tab.id && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  )}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* 2. Topic Filter Chips */}
+          {/* Topics */}
           {categories.length > 0 && (
-            <div className="rounded-3xl border border-border/80 bg-background-surface/85 backdrop-blur-md p-5 shadow-sm space-y-3">
+            <div className="rounded-xl border border-border bg-background-surface p-4 space-y-2.5">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-foreground-subtle">
-                  Explore Topics
+                <h3 className="text-[11px] font-semibold uppercase tracking-wider text-foreground-subtle">
+                  Topics
                 </h3>
                 {selectedCategory && (
                   <button
                     onClick={() => setSelectedCategory('')}
-                    className="text-[11px] text-primary hover:underline font-semibold"
+                    className="text-[11px] text-primary hover:underline"
                   >
                     Reset
                   </button>
@@ -341,13 +305,13 @@ export const HomePage: React.FC = () => {
               <div className="flex flex-wrap gap-1.5">
                 <button
                   onClick={() => setSelectedCategory('')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+                  className={`px-2.5 py-1 rounded-md text-xs transition-colors ${
                     !selectedCategory
-                      ? 'bg-primary text-white font-semibold shadow-sm'
-                      : 'bg-background-elevated hover:bg-background-subtle text-foreground-muted'
+                      ? 'bg-primary text-white font-medium'
+                      : 'bg-background-elevated text-foreground-muted hover:text-foreground'
                   }`}
                 >
-                  All Topics
+                  All
                 </button>
                 {categories.map((cat) => {
                   const isSelected = selectedCategory === cat.slug;
@@ -355,10 +319,10 @@ export const HomePage: React.FC = () => {
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(isSelected ? '' : cat.slug)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-colors ${
+                      className={`px-2.5 py-1 rounded-md text-xs transition-colors ${
                         isSelected
-                          ? 'bg-primary text-white font-semibold shadow-sm'
-                          : 'bg-background-elevated hover:bg-background-subtle text-foreground-muted'
+                          ? 'bg-primary text-white font-medium'
+                          : 'bg-background-elevated text-foreground-muted hover:text-foreground'
                       }`}
                     >
                       {cat.name}
@@ -369,27 +333,24 @@ export const HomePage: React.FC = () => {
             </div>
           )}
 
-          {/* 3. Recommended Creators (Minimal) */}
+          {/* Top Creators */}
           {topWriters.length > 0 && (
-            <div className="rounded-3xl border border-border/80 bg-background-surface/85 backdrop-blur-md p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-border/60">
-                <div className="flex items-center gap-1.5">
-                  <Users className="w-4 h-4 text-primary" />
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-foreground-subtle">
-                    Top Writers
-                  </h3>
-                </div>
-                <Link to="/leaderboard" className="text-[11px] text-primary hover:underline font-semibold">
+            <div className="rounded-xl border border-border bg-background-surface p-4 space-y-3">
+              <div className="flex items-center justify-between border-b border-border pb-2">
+                <h3 className="text-[11px] font-semibold uppercase tracking-wider text-foreground-subtle">
+                  Writers to Follow
+                </h3>
+                <Link to="/leaderboard" className="text-[11px] text-primary hover:underline font-medium">
                   View all
                 </Link>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {topWriters.map((writer) => (
                   <Link
                     key={writer.id}
                     to={`/@${writer.username}`}
-                    className="flex items-center justify-between p-1.5 -mx-1.5 rounded-xl hover:bg-background-elevated transition-colors group"
+                    className="flex items-center justify-between p-1 rounded-lg hover:bg-background-elevated transition-colors group"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <img
@@ -398,20 +359,20 @@ export const HomePage: React.FC = () => {
                           `https://api.dicebear.com/7.x/identicon/svg?seed=${writer.username}`
                         }
                         alt={writer.display_name}
-                        className="w-8 h-8 rounded-full object-cover border border-border group-hover:border-primary transition-colors shrink-0"
+                        className="w-7 h-7 rounded-full object-cover border border-border shrink-0"
                       />
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                        <p className="text-xs font-medium text-foreground group-hover:text-primary transition-colors truncate">
                           {writer.display_name}
                         </p>
-                        <p className="text-[10px] text-foreground-subtle truncate font-mono">
+                        <p className="text-[10px] text-foreground-subtle truncate">
                           @{writer.username}
                         </p>
                       </div>
                     </div>
 
-                    <span className="text-[11px] font-semibold text-primary group-hover:translate-x-0.5 transition-transform">
-                      View →
+                    <span className="text-[11px] text-primary font-medium">
+                      Read
                     </span>
                   </Link>
                 ))}
@@ -419,18 +380,18 @@ export const HomePage: React.FC = () => {
             </div>
           )}
 
-          {/* 4. Minimal Writer CTA */}
-          <div className="rounded-3xl border border-orange-500/20 bg-gradient-to-br from-amber-950/20 via-background-surface/85 to-orange-950/20 p-5 shadow-sm space-y-3">
-            <h4 className="font-serif font-bold text-base text-foreground">
-              Have something meaningful to share?
+          {/* Minimal Writer CTA */}
+          <div className="rounded-xl border border-border bg-background-surface p-4 space-y-2.5">
+            <h4 className="font-serif font-bold text-sm text-foreground">
+              Write on INKVERSE
             </h4>
             <p className="text-xs text-foreground-muted leading-relaxed">
-              Publish your stories, share technical breakdowns, and connect with a community of readers.
+              Share your insights, essays, and technical breakdowns with our community.
             </p>
             {user ? (
               <Link
                 to="/write"
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2"
+                className="w-full py-2 px-3 rounded-lg text-xs font-medium bg-primary hover:bg-primary-hover text-white transition-colors flex items-center justify-center gap-1.5"
               >
                 <PenTool className="w-3.5 h-3.5" />
                 <span>Start Writing</span>
@@ -438,7 +399,7 @@ export const HomePage: React.FC = () => {
             ) : (
               <button
                 onClick={() => setIsLoginModalOpen(true)}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2"
+                className="w-full py-2 px-3 rounded-lg text-xs font-medium bg-primary hover:bg-primary-hover text-white transition-colors flex items-center justify-center gap-1.5"
               >
                 <PenTool className="w-3.5 h-3.5" />
                 <span>Start Writing</span>

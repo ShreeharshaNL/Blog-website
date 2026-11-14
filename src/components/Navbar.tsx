@@ -35,16 +35,13 @@ export const Navbar: React.FC = () => {
       <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-background/85 border-b border-border transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo & Brand */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 via-amber-500 to-amber-300 p-0.5 shadow-md shadow-orange-950/20 group-hover:shadow-orange-600/40 transition-all duration-300">
-              <img src="/logo.svg" alt="INKVERSE" className="w-full h-full rounded-[10px]" />
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="w-8 h-8 rounded-lg overflow-hidden border border-border bg-stone-900 flex items-center justify-center">
+              <img src="/logo.svg" alt="INKVERSE" className="w-6 h-6" />
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 dark:from-amber-200 dark:via-orange-300 dark:to-amber-500 bg-clip-text text-transparent">
+              <span className="font-serif font-bold text-lg tracking-tight text-foreground">
                 INKVERSE
-              </span>
-              <span className="text-[9px] uppercase tracking-widest text-foreground-subtle -mt-1 font-semibold">
-                Community &amp; Rewards
               </span>
             </div>
           </Link>
