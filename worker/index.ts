@@ -52,7 +52,6 @@ app.route('/api/auth', authApp);
 app.route('/api/users', usersApp);
 app.route('/api/blogs', reactionsApp);
 app.route('/api/blogs', commentsApp);
-app.route('/api/blogs', bookmarksApp);
 app.route('/api/blogs', blogsApp);
 app.route('/api/comments', commentsApp);
 app.route('/api/dashboard', dashboardApp);
