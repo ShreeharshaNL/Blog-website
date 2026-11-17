@@ -371,14 +371,15 @@ export const WritePage: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowSettings(!showSettings)}
-            className={`p-1.5 rounded-xl border transition-colors ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
               showSettings
-                ? 'bg-primary/20 text-primary border-primary/40'
-                : 'border-border bg-background-surface hover:bg-background-elevated text-foreground-muted'
+                ? 'bg-primary text-white border-primary shadow-sm shadow-primary/25'
+                : 'border-border bg-background-surface hover:bg-background-elevated text-foreground-muted hover:text-foreground'
             }`}
             title="Publishing Settings & SEO"
           >
-            <Settings className="w-4 h-4" />
+            <Settings className={`w-3.5 h-3.5 transition-transform ${showSettings ? 'rotate-90 text-white' : ''}`} />
+            <span>Settings</span>
           </button>
 
           {/* Save Draft */}
@@ -397,7 +398,7 @@ export const WritePage: React.FC = () => {
             type="button"
             onClick={() => handleSave('published')}
             disabled={isSaving}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white shadow-md shadow-primary/20 transition-all disabled:opacity-40"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white shadow-md shadow-primary/20 transition-all disabled:opacity-40 cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
             <span>
@@ -411,13 +412,155 @@ export const WritePage: React.FC = () => {
         </div>
       </div>
 
+      {/* Settings / Metadata Panel - Placed right below the top action bar for instant access */}
+      {showSettings && (
+        <div className="p-6 rounded-2xl border border-primary/30 bg-background-surface space-y-6 animate-slide-up shadow-xl shadow-black/10">
+          <div className="flex items-center justify-between border-b border-border/80 pb-3">
+            <h3 className="font-semibold text-sm flex items-center gap-2 text-foreground">
+              <Settings className="w-4 h-4 text-primary" />
+              <span>Publishing Configuration &amp; SEO</span>
+            </h3>
+            <button
+              type="button"
+              onClick={() => setShowSettings(false)}
+              className="p-1 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors cursor-pointer"
+              title="Close Settings"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Category Selection */}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
+                Primary Topic / Category
+              </label>
+              <select
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+                className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+              >
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Custom Slug */}
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
+                Custom URL Slug (Optional)
+              </label>
+              <input
+                type="text"
+                value={customSlug}
+                onChange={(e) => setCustomSlug(e.target.value)}
+                placeholder="e.g. what-is-omarchy"
+                className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none font-mono"
+              />
+            </div>
+          </div>
+
+          {/* Tag Input */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
+              Tags (Up to 5 tags, press Enter to add)
+            </label>
+            <div className="flex items-center gap-2 flex-wrap p-2 rounded-xl border border-border bg-background-elevated">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-mono bg-primary/20 text-primary"
+                >
+                  #{tag}
+                  <button
+                    type="button"
+                    onClick={() => removeTag(tag)}
+                    className="hover:text-rose-400 ml-1 cursor-pointer"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              {tags.length < 5 && (
+                <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleAddTag}
+                  placeholder="Add tag..."
+                  className="text-xs bg-transparent text-foreground placeholder:text-foreground-subtle focus:outline-none p-1 font-mono"
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Scheduled Publishing */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
+              Scheduled Publishing Date (Optional)
+            </label>
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-primary" />
+              <input
+                type="datetime-local"
+                value={scheduledDate}
+                onChange={(e) => {
+                  setScheduledDate(e.target.value);
+                  if (e.target.value) setStatus('scheduled');
+                }}
+                className="text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none font-mono cursor-pointer"
+              />
+            </div>
+          </div>
+
+          {/* SEO Metadata */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border/60">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
+                SEO Meta Title (Optional)
+              </label>
+              <input
+                type="text"
+                value={seoTitle}
+                onChange={(e) => setSeoTitle(e.target.value)}
+                placeholder="Custom title for Google search..."
+                className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
+                SEO Meta Description (Optional)
+              </label>
+              <input
+                type="text"
+                value={seoDescription}
+                onChange={(e) => setSeoDescription(e.target.value)}
+                placeholder="Brief summary for search engines..."
+                className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Editor Main Content or Preview Mode */}
       {isPreview ? (
         <div className="max-w-3xl mx-auto space-y-8 animate-fade-in py-4">
           <div className="space-y-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-              Preview Mode
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Preview Mode
+              </span>
+              {categories.find((c) => c.id === categoryId) && (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                  {categories.find((c) => c.id === categoryId)?.name}
+                </span>
+              )}
+            </div>
             <h1 className="font-serif text-4xl sm:text-5xl font-bold">{title || 'Untitled Article'}</h1>
             {description && (
               <p className="font-serif text-lg text-foreground-muted italic">{description}</p>
@@ -451,6 +594,39 @@ export const WritePage: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-6">
+          {/* Category Quick Selector Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl border border-border bg-background-surface">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="category-select"
+                className="text-xs font-semibold uppercase tracking-wider text-foreground-subtle"
+              >
+                Category:
+              </label>
+              <select
+                id="category-select"
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+                className="text-xs font-medium px-3 py-1.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary hover:border-primary/50 transition-colors cursor-pointer"
+              >
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowSettings(!showSettings)}
+              className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-orange-600 font-semibold cursor-pointer transition-colors"
+            >
+              <Settings className="w-3.5 h-3.5" />
+              <span>{showSettings ? 'Hide Advanced SEO & Slug' : 'Advanced SEO & Slug Settings'}</span>
+            </button>
+          </div>
+
           {/* Title Input */}
           <input
             type="text"
@@ -580,103 +756,6 @@ export const WritePage: React.FC = () => {
               {wordCount} words · {charCount} characters
             </span>
             <span>~{readingTime} min read</span>
-          </div>
-        </div>
-      )}
-
-      {/* Settings / Metadata Drawer */}
-      {showSettings && (
-        <div className="p-6 rounded-2xl border border-border bg-background-surface space-y-6 animate-slide-up">
-          <h3 className="font-semibold text-sm flex items-center gap-2">
-            <Settings className="w-4 h-4 text-primary" />
-            <span>Publishing Configuration &amp; SEO</span>
-          </h3>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Category Selection */}
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
-                Primary Topic / Category
-              </label>
-              <select
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-              >
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Custom Slug */}
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
-                Custom URL Slug (Optional)
-              </label>
-              <input
-                type="text"
-                value={customSlug}
-                onChange={(e) => setCustomSlug(e.target.value)}
-                placeholder="e.g. what-is-omarchy"
-                className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none font-mono"
-              />
-            </div>
-          </div>
-
-          {/* Tag Input */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
-              Tags (Up to 5 tags, press Enter to add)
-            </label>
-            <div className="flex items-center gap-2 flex-wrap p-2 rounded-xl border border-border bg-background-elevated">
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-mono bg-primary/20 text-primary"
-                >
-                  #{tag}
-                  <button
-                    type="button"
-                    onClick={() => removeTag(tag)}
-                    className="hover:text-rose-400 ml-1"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-              {tags.length < 5 && (
-                <input
-                  type="text"
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={handleAddTag}
-                  placeholder="Add tag..."
-                  className="text-xs bg-transparent text-foreground placeholder:text-foreground-subtle focus:outline-none p-1 font-mono"
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Scheduled Publishing */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
-              Scheduled Publishing Date (Optional)
-            </label>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-primary" />
-              <input
-                type="datetime-local"
-                value={scheduledDate}
-                onChange={(e) => {
-                  setScheduledDate(e.target.value);
-                  if (e.target.value) setStatus('scheduled');
-                }}
-                className="text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none font-mono"
-              />
-            </div>
           </div>
         </div>
       )}
