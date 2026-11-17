@@ -432,18 +432,24 @@ blogsApp.post('/:slug/view', async (c) => {
   return c.json({ success: true, verified: true, view_count: newViewCount });
 });
 
+// Schema for media URLs (supports full URLs http/https, relative site paths /api/media/..., data URIs, or empty/null)
+const mediaUrlSchema = z.string().max(2048).refine(
+  (val) => !val || val === '' || val.startsWith('/') || /^https?:\/\//i.test(val) || val.startsWith('data:'),
+  { message: 'Invalid URL or media path' }
+).optional().nullable();
+
 // POST /api/blogs - Create new blog (supports drafts and publishing)
 const createBlogSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200),
-  description: z.string().max(500).optional().nullable(),
+  description: z.string().max(1000).optional().nullable(),
   content: z.string().optional().nullable(),
-  cover_image: z.string().url().optional().or(z.literal('')).nullable(),
+  cover_image: mediaUrlSchema,
   category_id: z.string().optional().nullable(),
   tags: z.array(z.string()).optional(),
   status: z.enum(['draft', 'published', 'scheduled', 'unlisted']).optional(),
   scheduled_at: z.number().optional().nullable(),
-  seo_title: z.string().max(100).optional().nullable(),
-  seo_description: z.string().max(200).optional().nullable(),
+  seo_title: z.string().max(200).optional().nullable(),
+  seo_description: z.string().max(500).optional().nullable(),
   slug: z.string().optional().nullable(),
 });
 
@@ -453,7 +459,8 @@ blogsApp.post('/', async (c) => {
   const parsed = createBlogSchema.safeParse(body);
 
   if (!parsed.success) {
-    return c.json({ error: 'Validation failed', details: parsed.error.issues }, 400);
+    const errorDetails = parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join(', ');
+    return c.json({ error: `Validation failed: ${errorDetails}`, details: parsed.error.issues }, 400);
   }
 
   const data = parsed.data;
@@ -575,7 +582,8 @@ blogsApp.put('/:id', async (c) => {
   const parsed = createBlogSchema.partial().safeParse(body);
 
   if (!parsed.success) {
-    return c.json({ error: 'Validation failed', details: parsed.error.issues }, 400);
+    const errorDetails = parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join(', ');
+    return c.json({ error: `Validation failed: ${errorDetails}`, details: parsed.error.issues }, 400);
   }
 
   const existing = await c.env.DB.prepare(

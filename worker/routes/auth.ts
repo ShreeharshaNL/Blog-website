@@ -59,12 +59,18 @@ authApp.post('/logout', async (c) => {
   return c.json({ success: true });
 });
 
+// Schema for media URLs (supports full URLs http/https, relative site paths /api/media/..., data URIs, or empty/null)
+const mediaUrlSchema = z.string().max(2048).refine(
+  (val) => !val || val === '' || val.startsWith('/') || /^https?:\/\//i.test(val) || val.startsWith('data:'),
+  { message: 'Invalid URL or media path' }
+).optional().nullable();
+
 // POST /api/auth/onboarding
 const onboardingSchema = z.object({
   username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain alphanumeric characters, underscores, and dashes'),
   display_name: z.string().min(2).max(50),
   bio: z.string().max(300).optional(),
-  avatar_url: z.string().url().optional().or(z.literal('')),
+  avatar_url: mediaUrlSchema,
   interests: z.array(z.string()).optional(),
 });
 
@@ -73,7 +79,8 @@ authApp.post('/onboarding', async (c) => {
   const body = await c.req.json();
   const parsed = onboardingSchema.safeParse(body);
   if (!parsed.success) {
-    return c.json({ error: 'Validation failed', details: parsed.error.issues }, 400);
+    const errorDetails = parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join(', ');
+    return c.json({ error: `Validation failed: ${errorDetails}`, details: parsed.error.issues }, 400);
   }
 
   const { username, display_name, bio, avatar_url, interests } = parsed.data;
@@ -109,7 +116,7 @@ authApp.post('/onboarding', async (c) => {
 const profileSchema = z.object({
   display_name: z.string().min(2).max(50).optional(),
   bio: z.string().max(300).optional(),
-  avatar_url: z.string().url().optional().or(z.literal('')),
+  avatar_url: mediaUrlSchema,
   interests: z.array(z.string()).optional(),
   show_dislike_stats: z.boolean().optional(),
 });
@@ -119,7 +126,8 @@ authApp.put('/profile', async (c) => {
   const body = await c.req.json();
   const parsed = profileSchema.safeParse(body);
   if (!parsed.success) {
-    return c.json({ error: 'Validation failed', details: parsed.error.issues }, 400);
+    const errorDetails = parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join(', ');
+    return c.json({ error: `Validation failed: ${errorDetails}`, details: parsed.error.issues }, 400);
   }
 
   const updates: string[] = ['updated_at = ?'];

@@ -190,7 +190,7 @@ describe('INKVERSE API & Platform Verification', () => {
       expect(fetchDraftData.blog.status).toBe('draft');
       expect(fetchDraftData.blog.title).toBe('My In-Progress Draft Note');
 
-      // 3. Update the draft with content
+      // 3. Update the draft with content and website-hosted cover_image
       const updateDraftRes = await app.request(`/api/blogs/${draftId}`, {
         method: 'PUT',
         headers: {
@@ -200,6 +200,7 @@ describe('INKVERSE API & Platform Verification', () => {
         body: JSON.stringify({
           title: 'My In-Progress Draft Note (Expanded)',
           content: '<p>Now this draft has some actual detailed content inside it.</p>',
+          cover_image: '/api/media/uploads/1700000000-photo.png',
           status: 'draft',
         }),
       }, testEnv);

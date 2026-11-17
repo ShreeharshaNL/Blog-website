@@ -66,7 +66,16 @@ export async function apiRequest<T = any>(
   }
 
   if (!res.ok) {
-    const errorMsg = data?.error || (typeof data === 'string' ? data : `Request failed with status ${res.status}`);
+    let errorMsg = data?.error;
+    if (data?.details && Array.isArray(data.details)) {
+      const fieldErrors = data.details.map((d: any) => `${d.path?.join('.') || 'field'}: ${d.message}`).join(', ');
+      if (fieldErrors && (!errorMsg || errorMsg === 'Validation failed')) {
+        errorMsg = `Validation failed: ${fieldErrors}`;
+      }
+    }
+    if (!errorMsg) {
+      errorMsg = typeof data === 'string' ? data : `Request failed with status ${res.status}`;
+    }
     throw new ApiError(res.status, errorMsg, data);
   }
 
