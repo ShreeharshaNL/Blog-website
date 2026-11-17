@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -9,6 +9,7 @@ import { Table } from '@tiptap/extension-table';
 import { TableRow } from '@tiptap/extension-table-row';
 import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
+import { VideoExtension } from './tiptap/VideoExtension';
 import {
   Bold,
   Italic,
@@ -22,12 +23,13 @@ import {
   Code,
   Link as LinkIcon,
   Image as ImageIcon,
+  Video as VideoIcon,
   Table as TableIcon,
   Undo,
   Redo,
   Upload,
 } from 'lucide-react';
-import { apiRequest } from '../utils/api';
+import { uploadMedia } from '../utils/api';
 
 interface BlogEditorProps {
   initialContent: string;
@@ -40,7 +42,9 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
   onChange,
   placeholder = 'Tell your story...',
 }) => {
-  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<'image' | 'video' | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -61,6 +65,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           class: 'rounded-xl max-w-full my-6 shadow-lg shadow-black/30',
         },
       }),
+      VideoExtension,
       Placeholder.configure({
         placeholder,
       }),
@@ -75,6 +80,21 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
     editorProps: {
       attributes: {
         class: 'prose-editorial focus:outline-none min-h-[350px] p-4 sm:p-6 text-foreground',
+      },
+      handleDrop: (view, event, _slice, moved) => {
+        if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+          const file = event.dataTransfer.files[0];
+          if (file.type.startsWith('image/')) {
+            event.preventDefault();
+            handleProcessUpload(file, 'image');
+            return true;
+          } else if (file.type.startsWith('video/')) {
+            event.preventDefault();
+            handleProcessUpload(file, 'video');
+            return true;
+          }
+        }
+        return false;
       },
     },
     onUpdate: ({ editor }) => {
@@ -96,44 +116,37 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
+  const handleProcessUpload = async (file: File, type: 'image' | 'video') => {
+    setUploadStatus(type);
     try {
-      // Read file to base64
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const base64Data = (reader.result as string).split(',')[1];
-        try {
-          const res = await apiRequest<{ success: boolean; url: string }>('/api/upload', {
-            method: 'POST',
-            body: JSON.stringify({
-              data: base64Data,
-              mimeType: file.type,
-              filename: file.name,
-            }),
-          });
-          if (res.url) {
-            editor.chain().focus().setImage({ src: res.url }).run();
-          }
-        } catch (uploadErr: any) {
-          alert('Upload failed: ' + (uploadErr.message || 'Error'));
-        } finally {
-          setIsUploading(false);
+      const res = await uploadMedia(file);
+      if (res.url) {
+        if (type === 'image' || res.mediaType === 'image') {
+          editor.chain().focus().setImage({ src: res.url }).run();
+        } else {
+          editor.chain().focus().setVideo({ src: res.url }).run();
         }
-      };
-      reader.readAsDataURL(file);
-    } catch (err) {
-      setIsUploading(false);
+      }
+    } catch (uploadErr: any) {
+      alert(`Upload failed: ${uploadErr.message || 'Error uploading file'}`);
+    } finally {
+      setUploadStatus(null);
+      if (imageInputRef.current) imageInputRef.current.value = '';
+      if (videoInputRef.current) videoInputRef.current.value = '';
     }
   };
 
-  const addImageUrl = () => {
-    const url = window.prompt('Enter image URL');
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleProcessUpload(file, 'image');
+    }
+  };
+
+  const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleProcessUpload(file, 'video');
     }
   };
 
@@ -291,28 +304,39 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           <LinkIcon className="w-4 h-4" />
         </button>
 
+        {/* Direct Image Upload to Website */}
         <label
-          className="p-1.5 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-elevated cursor-pointer transition-colors"
-          title="Upload inline image"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground-muted hover:text-foreground hover:bg-background-elevated cursor-pointer transition-colors border border-border/60 hover:border-orange-500/50"
+          title="Upload image from computer (stored directly on website)"
         >
-          <Upload className="w-4 h-4" />
+          <ImageIcon className="w-3.5 h-3.5 text-primary" />
+          <span>Upload Image</span>
           <input
+            ref={imageInputRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,image/avif"
             className="hidden"
-            onChange={handleImageUpload}
-            disabled={isUploading}
+            onChange={handleImageFileChange}
+            disabled={uploadStatus !== null}
           />
         </label>
 
-        <button
-          type="button"
-          onClick={addImageUrl}
-          className="p-1.5 rounded-lg text-foreground-muted hover:text-foreground hover:bg-background-elevated transition-colors"
-          title="Image URL"
+        {/* Direct Video Upload to Website */}
+        <label
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground-muted hover:text-foreground hover:bg-background-elevated cursor-pointer transition-colors border border-border/60 hover:border-orange-500/50"
+          title="Upload video from computer (stored directly on website)"
         >
-          <ImageIcon className="w-4 h-4" />
-        </button>
+          <VideoIcon className="w-3.5 h-3.5 text-primary" />
+          <span>Upload Video</span>
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-matroska"
+            className="hidden"
+            onChange={handleVideoFileChange}
+            disabled={uploadStatus !== null}
+          />
+        </label>
 
         <button
           type="button"
@@ -323,9 +347,10 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           <TableIcon className="w-4 h-4" />
         </button>
 
-        {isUploading && (
-          <span className="text-xs text-orange-500 dark:text-orange-400 font-medium ml-2 animate-pulse">
-            Uploading image...
+        {uploadStatus && (
+          <span className="inline-flex items-center gap-1.5 text-xs text-orange-600 dark:text-orange-400 font-semibold ml-2 animate-pulse bg-orange-500/10 px-2 py-1 rounded-md border border-orange-500/20">
+            <Upload className="w-3 h-3 animate-bounce" />
+            Uploading {uploadStatus} to website...
           </span>
         )}
       </div>

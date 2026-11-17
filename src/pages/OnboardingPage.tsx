@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Check, ArrowRight } from 'lucide-react';
+import { Sparkles, Check, ArrowRight, Upload } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { apiRequest } from '../utils/api';
+import { apiRequest, uploadMedia } from '../utils/api';
 import { Category } from '../types';
 
 export const OnboardingPage: React.FC = () => {
@@ -13,6 +13,25 @@ export const OnboardingPage: React.FC = () => {
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const avatarInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingAvatar(true);
+    try {
+      const res = await uploadMedia(file);
+      if (res.url) {
+        setAvatarUrl(res.url);
+      }
+    } catch (err: any) {
+      alert(`Avatar upload failed: ${err.message || 'Error uploading file'}`);
+    } finally {
+      setIsUploadingAvatar(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = '';
+    }
+  };
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -154,17 +173,43 @@ export const OnboardingPage: React.FC = () => {
             />
           </div>
 
-          {/* Avatar URL */}
+          {/* Avatar URL & Upload */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1.5">
-              Profile Avatar URL (Optional)
+              Profile Avatar (Stored on Website)
             </label>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={isUploadingAvatar}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-orange-600 text-white transition-colors cursor-pointer"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{isUploadingAvatar ? 'Uploading...' : 'Upload Avatar'}</span>
+                </button>
+                {avatarUrl && (
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                    Avatar attached
+                  </span>
+                )}
+              </div>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,image/avif"
+                className="hidden"
+                onChange={handleAvatarUpload}
+                disabled={isUploadingAvatar}
+              />
+            </div>
             <input
               type="url"
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}
               className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-              placeholder="https://images.unsplash.com/..."
+              placeholder="Or paste image URL (e.g. https://...)"
             />
           </div>
 

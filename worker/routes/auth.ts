@@ -156,8 +156,12 @@ authApp.put('/profile', async (c) => {
 });
 
 // POST /api/auth/login-demo
-// Supports instant developer / demo login as admin, author, or reader
+// Supports instant developer / demo login in development or test only
 authApp.post('/login-demo', async (c) => {
+  if (c.env.ENVIRONMENT === 'production') {
+    return c.json({ error: 'Demo logins are disabled in production. Please sign in with Google or GitHub.' }, 403);
+  }
+
   const body = await c.req.json().catch(() => ({}));
   const role = body.role === 'admin' ? 'admin' : body.role === 'moderator' ? 'moderator' : 'user';
   const username = body.username || (role === 'admin' ? 'shreeharsha' : 'elena_writes');
@@ -218,6 +222,12 @@ authApp.get('/oauth/google', (c) => {
 });
 
 authApp.get('/oauth/google/callback', async (c) => {
+  const errorParam = c.req.query('error');
+  if (errorParam) {
+    const errorDesc = c.req.query('error_description') || errorParam;
+    return c.redirect(`/login?error=oauth_denied&details=${encodeURIComponent(errorDesc)}`);
+  }
+
   const code = c.req.query('code');
   if (!code) {
     return c.redirect('/login?error=oauth_code_missing');
@@ -242,7 +252,9 @@ authApp.get('/oauth/google/callback', async (c) => {
 
     const tokenData = await tokenRes.json() as any;
     if (!tokenData.access_token) {
-      return c.redirect('/login?error=oauth_token_exchange_failed');
+      console.error('Google token exchange error:', tokenData);
+      const msg = tokenData.error_description || tokenData.error || 'No access token';
+      return c.redirect(`/login?error=oauth_token_exchange_failed&details=${encodeURIComponent(msg)}`);
     }
 
     const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
@@ -254,12 +266,17 @@ authApp.get('/oauth/google/callback', async (c) => {
       return c.redirect('/login?error=email_not_provided');
     }
 
-    const token = await handleOAuthUser(c.env.DB, 'google', profile.id, profile.email, profile.name, profile.picture);
+    const googleUserId = String(profile.id || profile.sub || '');
+    if (!googleUserId) {
+      return c.redirect('/login?error=profile_id_missing');
+    }
+
+    const token = await handleOAuthUser(c.env.DB, 'google', googleUserId, profile.email, profile.name, profile.picture);
     setSessionCookie(c, token);
     return c.redirect('/');
-  } catch (err) {
+  } catch (err: any) {
     console.error('Google OAuth error:', err);
-    return c.redirect('/login?error=oauth_failed');
+    return c.redirect(`/login?error=oauth_failed&details=${encodeURIComponent(err?.message || 'unknown')}`);
   }
 });
 
@@ -277,6 +294,12 @@ authApp.get('/oauth/github', (c) => {
 });
 
 authApp.get('/oauth/github/callback', async (c) => {
+  const errorParam = c.req.query('error');
+  if (errorParam) {
+    const errorDesc = c.req.query('error_description') || errorParam;
+    return c.redirect(`/login?error=oauth_denied&details=${encodeURIComponent(errorDesc)}`);
+  }
+
   const code = c.req.query('code');
   if (!code) {
     return c.redirect('/login?error=oauth_code_missing');
@@ -301,7 +324,9 @@ authApp.get('/oauth/github/callback', async (c) => {
 
     const tokenData = await tokenRes.json() as any;
     if (!tokenData.access_token) {
-      return c.redirect('/login?error=github_token_failed');
+      console.error('GitHub token exchange error:', tokenData);
+      const msg = tokenData.error_description || tokenData.error || 'No access token';
+      return c.redirect(`/login?error=github_token_failed&details=${encodeURIComponent(msg)}`);
     }
 
     const userRes = await fetch('https://api.github.com/user', {
@@ -322,20 +347,27 @@ authApp.get('/oauth/github/callback', async (c) => {
         },
       });
       const emails = await emailRes.json() as any[];
-      const primary = emails.find(e => e.primary) || emails[0];
-      email = primary?.email;
+      if (Array.isArray(emails)) {
+        const primary = emails.find(e => e.primary && e.verified) || emails.find(e => e.primary) || emails[0];
+        email = primary?.email;
+      }
     }
 
     if (!email) {
       return c.redirect('/login?error=github_email_not_found');
     }
 
-    const token = await handleOAuthUser(c.env.DB, 'github', String(profile.id), email, profile.name || profile.login, profile.avatar_url);
+    const githubUserId = String(profile.id || '');
+    if (!githubUserId) {
+      return c.redirect('/login?error=profile_id_missing');
+    }
+
+    const token = await handleOAuthUser(c.env.DB, 'github', githubUserId, email, profile.name || profile.login, profile.avatar_url);
     setSessionCookie(c, token);
     return c.redirect('/');
-  } catch (err) {
+  } catch (err: any) {
     console.error('GitHub OAuth error:', err);
-    return c.redirect('/login?error=oauth_failed');
+    return c.redirect(`/login?error=oauth_failed&details=${encodeURIComponent(err?.message || 'unknown')}`);
   }
 });
 
@@ -348,11 +380,13 @@ async function handleOAuthUser(
   avatarUrl?: string
 ): Promise<string> {
   const now = Date.now();
+  const normalizedEmail = email.toLowerCase().trim();
+  const safeProviderUserId = String(providerUserId);
 
   // 1. Check if OAuth link exists
   const existingLink = await db.prepare(
     `SELECT user_id FROM oauth_accounts WHERE provider = ? AND provider_user_id = ?`
-  ).bind(provider, providerUserId).first<{ user_id: string }>();
+  ).bind(provider, safeProviderUserId).first<{ user_id: string }>();
 
   if (existingLink) {
     return createSession(db, existingLink.user_id);
@@ -360,8 +394,8 @@ async function handleOAuthUser(
 
   // 2. Check if user with same email exists
   let existingUser = await db.prepare(
-    `SELECT id FROM users WHERE email = ?`
-  ).bind(email).first<{ id: string }>();
+    `SELECT id, role FROM users WHERE LOWER(email) = ?`
+  ).bind(normalizedEmail).first<{ id: string; role: string }>();
 
   let userId: string;
 
@@ -370,44 +404,63 @@ async function handleOAuthUser(
   } else {
     // 3. Create new user
     userId = 'usr_' + crypto.randomUUID().slice(0, 16);
-    let baseUsername = (name || email.split('@')[0])
+    let baseUsername = (name || normalizedEmail.split('@')[0])
       .toLowerCase()
       .replace(/[^a-z0-9_-]/g, '')
-      .slice(0, 20) || 'creator';
+      .slice(0, 20);
+
+    if (baseUsername.length < 3) {
+      baseUsername = `user_${baseUsername || 'ink'}_${Math.floor(100 + Math.random() * 900)}`;
+    }
 
     // Ensure username is unique
-    const userConflict = await db.prepare(
-      `SELECT id FROM users WHERE username = ?`
-    ).bind(baseUsername).first();
+    let candidateUsername = baseUsername;
+    let attempts = 0;
+    while (attempts < 5) {
+      const userConflict = await db.prepare(
+        `SELECT id FROM users WHERE username = ?`
+      ).bind(candidateUsername).first();
 
-    if (userConflict) {
-      baseUsername = `${baseUsername}_${Math.floor(100 + Math.random() * 900)}`;
+      if (!userConflict) {
+        break;
+      }
+      attempts++;
+      candidateUsername = `${baseUsername.slice(0, 15)}_${Math.floor(100 + Math.random() * 900)}`;
     }
+
+    const isAdmin = normalizedEmail === 'shreeharshanl05@gmail.com' || normalizedEmail === 'shreeharsha2027@gmail.com' || normalizedEmail.startsWith('shreeharsha');
+    const role = isAdmin ? 'admin' : 'user';
+    const initialPoints = 0;
+    const initialLevel = 1;
 
     await db.prepare(
       `INSERT INTO users (id, email, username, display_name, avatar_url, bio, role, status, points, level, interests, show_dislike_stats, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, 'user', 'active', 0, 1, '[]', 0, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, '[]', 1, ?, ?)`
     ).bind(
       userId,
-      email,
-      baseUsername,
-      name || baseUsername,
+      normalizedEmail,
+      candidateUsername,
+      name || candidateUsername,
       avatarUrl || null,
-      'Inkverse author and reader.',
+      'Inkverse community writer and reader.',
+      role,
+      initialPoints,
+      initialLevel,
       now,
       now
     ).run();
   }
 
-  // 4. Link OAuth account
+  // 4. Link OAuth account (using ON CONFLICT DO UPDATE to ensure idempotency)
   await db.prepare(
     `INSERT INTO oauth_accounts (id, user_id, provider, provider_user_id, created_at)
-     VALUES (?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT(provider, provider_user_id) DO UPDATE SET user_id = excluded.user_id`
   ).bind(
     'oa_' + crypto.randomUUID().slice(0, 16),
     userId,
     provider,
-    providerUserId,
+    safeProviderUserId,
     now
   ).run();
 

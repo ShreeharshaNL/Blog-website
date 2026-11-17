@@ -17,6 +17,7 @@ import bookmarksApp from './routes/bookmarks';
 import notifApp from './routes/notifications';
 import reportsApp from './routes/reports';
 import uploadApp from './routes/upload';
+import { getMedia } from './mediaStorage';
 
 const app = new Hono<{ Bindings: Env; Variables: HonoVariables }>();
 
@@ -62,24 +63,15 @@ app.route('/api/notifications', notifApp);
 app.route('/api/reports', reportsApp);
 app.route('/api/upload', uploadApp);
 
-// Media serving endpoint (R2 Bucket)
+// Media serving endpoint (R2 Bucket & Fallback Media Storage with Range Streaming)
 app.get('/api/media/:key{.*}', async (c) => {
   const key = c.req.param('key');
-  if (!c.env.MEDIA_BUCKET) {
-    return c.text('Media bucket not available', 404);
-  }
-
-  const object = await c.env.MEDIA_BUCKET.get(key);
-  if (!object) {
+  const rangeHeader = c.req.header('range');
+  const response = await getMedia(c.env, key, rangeHeader);
+  if (!response) {
     return c.text('File not found', 404);
   }
-
-  const headers = new Headers();
-  object.writeHttpMetadata(headers);
-  headers.set('etag', object.httpEtag);
-  headers.set('Cache-Control', 'public, max-age=31536000, immutable');
-
-  return new Response(object.body, { headers });
+  return response;
 });
 
 // Central Error Handler

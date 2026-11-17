@@ -80,6 +80,29 @@ describe('INKVERSE API & Platform Verification', () => {
       expect(meData.user.display_name).toBe('Bob The Creator');
       expect(meData.user.interests).toEqual(['technology', 'programming']);
     });
+
+    it('should handle OAuth callback validation and error redirects', async () => {
+      // 1. Missing code parameter in Google callback
+      const googleMissingRes = await app.request('/api/auth/oauth/google/callback', {
+        method: 'GET',
+      }, testEnv);
+      expect(googleMissingRes.status).toBe(302);
+      expect(googleMissingRes.headers.get('location')).toBe('/login?error=oauth_code_missing');
+
+      // 2. Denied consent parameter in Google callback
+      const googleDeniedRes = await app.request('/api/auth/oauth/google/callback?error=access_denied&error_description=User+denied+access', {
+        method: 'GET',
+      }, testEnv);
+      expect(googleDeniedRes.status).toBe(302);
+      expect(googleDeniedRes.headers.get('location')).toContain('/login?error=oauth_denied');
+
+      // 3. Missing code parameter in GitHub callback
+      const githubMissingRes = await app.request('/api/auth/oauth/github/callback', {
+        method: 'GET',
+      }, testEnv);
+      expect(githubMissingRes.status).toBe(302);
+      expect(githubMissingRes.headers.get('location')).toBe('/login?error=oauth_code_missing');
+    });
   });
 
   describe('2. Blog Creation, Revisions & Publishing Workflow', () => {
@@ -126,6 +149,93 @@ describe('INKVERSE API & Platform Verification', () => {
       const revData = await revRes.json() as any;
       expect(revData.revisions.length).toBe(1);
       expect(revData.revisions[0].title).toBe('The Future of Serverless Edge Computing');
+    });
+
+    it('should support creating, loading by ID, updating, and publishing drafts', async () => {
+      const loginRes = await app.request('/api/auth/login-demo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'draft_author', display_name: 'Draft Author' }),
+      }, testEnv);
+      const { token } = await loginRes.json() as any;
+
+      // 1. Create a minimal draft with only title
+      const draftRes = await app.request('/api/blogs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: 'My In-Progress Draft Note',
+          status: 'draft',
+        }),
+      }, testEnv);
+
+      expect(draftRes.status).toBe(201);
+      const draftData = await draftRes.json() as any;
+      expect(draftData.success).toBe(true);
+      expect(draftData.blog_id).toBeDefined();
+
+      const draftId = draftData.blog_id;
+
+      // 2. Fetch the draft by its blog_id directly
+      const fetchDraftRes = await app.request(`/api/blogs/${draftId}`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+      }, testEnv);
+      expect(fetchDraftRes.status).toBe(200);
+      const fetchDraftData = await fetchDraftRes.json() as any;
+      expect(fetchDraftData.blog.id).toBe(draftId);
+      expect(fetchDraftData.blog.status).toBe('draft');
+      expect(fetchDraftData.blog.title).toBe('My In-Progress Draft Note');
+
+      // 3. Update the draft with content
+      const updateDraftRes = await app.request(`/api/blogs/${draftId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: 'My In-Progress Draft Note (Expanded)',
+          content: '<p>Now this draft has some actual detailed content inside it.</p>',
+          status: 'draft',
+        }),
+      }, testEnv);
+      expect(updateDraftRes.status).toBe(200);
+
+      // 4. Publish the draft
+      const publishRes = await app.request(`/api/blogs/${draftId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          status: 'published',
+        }),
+      }, testEnv);
+      expect(publishRes.status).toBe(200);
+
+      // 5. Verify it is now publicly published
+      const publicRes = await app.request(`/api/blogs/${draftId}`, {
+        method: 'GET',
+      }, testEnv);
+      expect(publicRes.status).toBe(200);
+      const publicData = await publicRes.json() as any;
+      expect(publicData.blog.status).toBe('published');
+
+      // 6. Delete blog with clean cascade
+      const deleteRes = await app.request(`/api/blogs/${draftId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      }, testEnv);
+      expect(deleteRes.status).toBe(200);
+
+      // Verify it is gone
+      const checkDeleted = await app.request(`/api/blogs/${draftId}`, { method: 'GET' }, testEnv);
+      expect(checkDeleted.status).toBe(404);
     });
 
     it('should prevent unauthorized users from editing other authors blogs', async () => {
@@ -674,6 +784,68 @@ describe('INKVERSE API & Platform Verification', () => {
       const goodData = await goodRes.json() as any;
       expect(goodData.success).toBe(true);
       expect(goodData.url).toBeDefined();
+      expect(goodData.url).toContain('/api/media/uploads/');
+
+      // 3. Valid video upload (MP4) and media serving verification
+      const videoBase64 = 'AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQ==';
+      const videoRes = await app.request('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          data: videoBase64,
+          mimeType: 'video/mp4',
+          filename: 'demo.mp4',
+        }),
+      }, testEnv);
+
+      expect(videoRes.status).toBe(200);
+      const videoData = await videoRes.json() as any;
+      expect(videoData.success).toBe(true);
+      expect(videoData.mediaType).toBe('video');
+      expect(videoData.url).toContain('/api/media/uploads/');
+      expect(videoData.url.endsWith('.mp4')).toBe(true);
+
+      // 4. Retrieve stored video from website media endpoint
+      const mediaRes = await app.request(videoData.url, { method: 'GET' }, testEnv);
+      expect(mediaRes.status).toBe(200);
+      expect(mediaRes.headers.get('Content-Type')).toBe('video/mp4');
+      expect(mediaRes.headers.get('Accept-Ranges')).toBe('bytes');
+
+      // 5. Test video partial content streaming (HTTP 206 Range Request)
+      const rangeRes = await app.request(videoData.url, {
+        method: 'GET',
+        headers: { Range: 'bytes=0-10' },
+      }, testEnv);
+      expect(rangeRes.status).toBe(206);
+      expect(rangeRes.headers.get('Content-Range')).toContain('bytes 0-10/');
+      expect(rangeRes.headers.get('Content-Length')).toBe('11');
+
+      // 6. Valid multipart/form-data upload for images/videos
+      const boundary = '----WebKitFormBoundaryTest123';
+      const multipartBody = 
+        `--${boundary}\r\n` +
+        `Content-Disposition: form-data; name="file"; filename="clip.webm"\r\n` +
+        `Content-Type: video/webm\r\n\r\n` +
+        `mock video bytes for upload test\r\n` +
+        `--${boundary}--\r\n`;
+
+      const formRes = await app.request('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
+          Authorization: `Bearer ${token}`,
+        },
+        body: multipartBody,
+      }, testEnv);
+
+      expect(formRes.status).toBe(200);
+      const formDataRes = await formRes.json() as any;
+      expect(formDataRes.success).toBe(true);
+      expect(formDataRes.mediaType).toBe('video');
+      expect(formDataRes.url).toContain('.webm');
     });
   });
 });

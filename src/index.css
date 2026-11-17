@@ -123,6 +123,15 @@
   box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
 }
 
+.prose-editorial video {
+  border-radius: 0.75rem;
+  margin: 2rem auto;
+  max-width: 100%;
+  width: 100%;
+  background-color: #000;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+}
+
 .prose-editorial ul,
 .prose-editorial ol {
   padding-left: 1.5rem;

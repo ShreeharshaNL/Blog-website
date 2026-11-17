@@ -84,15 +84,30 @@ export async function authMiddleware(
   c: Context<{ Bindings: Env; Variables: HonoVariables }>,
   next: () => Promise<void>
 ) {
-  const token = getSessionToken(c);
-  c.set('sessionToken', token);
+  let token = getSessionToken(c);
+  let user: SessionUser | null = null;
 
   if (token) {
-    const user = await getUserFromSession(c.env.DB, token);
-    c.set('user', user);
-  } else {
-    c.set('user', null);
+    user = await getUserFromSession(c.env.DB, token);
   }
+
+  // Fallback to cookie if Authorization header token was invalid or expired
+  if (!user) {
+    const cookie = c.req.header('Cookie');
+    if (cookie) {
+      const match = cookie.match(/inkverse_session=([^;]+)/);
+      if (match && match[1] !== token) {
+        const cookieToken = match[1];
+        user = await getUserFromSession(c.env.DB, cookieToken);
+        if (user) {
+          token = cookieToken;
+        }
+      }
+    }
+  }
+
+  c.set('sessionToken', user ? token : null);
+  c.set('user', user);
 
   await next();
 }

@@ -11,9 +11,10 @@ import {
   BookOpen,
   Award,
   Users,
+  Upload,
 } from 'lucide-react';
 import { PublicUser, Blog } from '../types';
-import { apiRequest } from '../utils/api';
+import { apiRequest, uploadMedia } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { LevelBadge } from '../components/LevelBadge';
 import { BadgeIcon } from '../components/BadgeIcon';
@@ -37,6 +38,25 @@ export const ProfilePage: React.FC = () => {
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const avatarInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingAvatar(true);
+    try {
+      const res = await uploadMedia(file);
+      if (res.url) {
+        setAvatarUrl(res.url);
+      }
+    } catch (err: any) {
+      alert(`Avatar upload failed: ${err.message || 'Error uploading file'}`);
+    } finally {
+      setIsUploadingAvatar(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = '';
+    }
+  };
 
   useEffect(() => {
     async function loadProfile() {
@@ -313,13 +333,48 @@ export const ProfilePage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-foreground-subtle mb-1">
-                  Avatar Image URL
+                  Profile Avatar
                 </label>
+                <div className="flex items-center gap-3 mb-2">
+                  <img
+                    src={avatarUrl || `https://api.dicebear.com/7.x/identicon/svg?seed=${username}`}
+                    alt="Preview"
+                    className="w-12 h-12 rounded-full object-cover border border-border"
+                  />
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => avatarInputRef.current?.click()}
+                      disabled={isUploadingAvatar}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-background-surface hover:bg-background-subtle border border-border text-foreground transition-colors cursor-pointer"
+                    >
+                      <Upload className="w-3.5 h-3.5 text-primary" />
+                      <span>{isUploadingAvatar ? 'Uploading...' : 'Upload Avatar'}</span>
+                    </button>
+                    {avatarUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setAvatarUrl('')}
+                        className="text-xs text-rose-500 hover:text-rose-600 font-medium"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,image/avif"
+                    className="hidden"
+                    onChange={handleAvatarUpload}
+                    disabled={isUploadingAvatar}
+                  />
+                </div>
                 <input
                   type="url"
                   value={avatarUrl}
                   onChange={(e) => setAvatarUrl(e.target.value)}
-                  placeholder="https://..."
+                  placeholder="Or paste avatar URL (e.g. https://...)"
                   className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-orange-500"
                 />
               </div>

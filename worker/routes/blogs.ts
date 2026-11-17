@@ -232,9 +232,9 @@ blogsApp.get('/editor-picks', async (c) => {
   return c.json({ blogs });
 });
 
-// GET /api/blogs/:slug - Detailed Blog Reading View
+// GET /api/blogs/:slug - Detailed Blog Reading View (Supports both slug and blog ID)
 blogsApp.get('/:slug', async (c) => {
-  const slug = c.req.param('slug');
+  const slugOrId = c.req.param('slug');
   const currentUser = c.get('user');
 
   const query = `
@@ -250,10 +250,10 @@ blogsApp.get('/:slug', async (c) => {
     FROM blogs b
     JOIN users u ON b.author_id = u.id
     LEFT JOIN categories c ON b.category_id = c.id
-    WHERE b.slug = ?
+    WHERE b.slug = ? OR b.id = ?
   `;
 
-  const blog = await c.env.DB.prepare(query).bind(slug).first<any>();
+  const blog = await c.env.DB.prepare(query).bind(slugOrId, slugOrId).first<any>();
 
   if (!blog) {
     return c.json({ error: 'Blog not found' }, 404);
@@ -432,19 +432,19 @@ blogsApp.post('/:slug/view', async (c) => {
   return c.json({ success: true, verified: true, view_count: newViewCount });
 });
 
-// POST /api/blogs - Create new blog
+// POST /api/blogs - Create new blog (supports drafts and publishing)
 const createBlogSchema = z.object({
-  title: z.string().min(3).max(200),
-  description: z.string().min(5).max(500),
-  content: z.string().min(10),
-  cover_image: z.string().url().optional().or(z.literal('')),
-  category_id: z.string().optional(),
+  title: z.string().min(1, 'Title is required').max(200),
+  description: z.string().max(500).optional().nullable(),
+  content: z.string().optional().nullable(),
+  cover_image: z.string().url().optional().or(z.literal('')).nullable(),
+  category_id: z.string().optional().nullable(),
   tags: z.array(z.string()).optional(),
-  status: z.enum(['draft', 'published', 'scheduled', 'unlisted']).default('published'),
+  status: z.enum(['draft', 'published', 'scheduled', 'unlisted']).optional(),
   scheduled_at: z.number().optional().nullable(),
-  seo_title: z.string().max(100).optional(),
-  seo_description: z.string().max(200).optional(),
-  slug: z.string().optional(),
+  seo_title: z.string().max(100).optional().nullable(),
+  seo_description: z.string().max(200).optional().nullable(),
+  slug: z.string().optional().nullable(),
 });
 
 blogsApp.post('/', async (c) => {
@@ -457,19 +457,32 @@ blogsApp.post('/', async (c) => {
   }
 
   const data = parsed.data;
+  const blogStatus = data.status || 'published';
+
+  // If publishing, ensure content has substance
+  if (blogStatus === 'published') {
+    if (!data.content || data.content.trim().length < 10) {
+      return c.json({ error: 'Article content must be at least 10 characters to publish' }, 400);
+    }
+  }
+
   const now = Date.now();
   const blogId = 'blog_' + crypto.randomUUID().slice(0, 16);
-  const slug = data.slug ? data.slug.toLowerCase().trim().replace(/[^\w-]/g, '') : generateSlug(data.title);
+  const rawTitle = data.title.trim() || 'untitled-story';
+  const slugCandidate = data.slug ? data.slug.toLowerCase().trim().replace(/[^\w-]/g, '') : generateSlug(rawTitle);
 
   // Check slug uniqueness
   const slugExists = await c.env.DB.prepare(
     `SELECT id FROM blogs WHERE slug = ?`
-  ).bind(slug).first();
+  ).bind(slugCandidate).first();
 
-  const finalSlug = slugExists ? `${slug}-${Math.floor(100 + Math.random() * 900)}` : slug;
-  const { wordCount, readingTimeMinutes } = calculateReadingStats(data.content);
+  const finalSlug = slugExists ? `${slugCandidate}-${Math.floor(100 + Math.random() * 900)}` : slugCandidate;
+  const { wordCount, readingTimeMinutes } = calculateReadingStats(data.content || '');
 
-  const publishedAt = data.status === 'published' ? now : null;
+  const publishedAt = blogStatus === 'published' ? now : null;
+  const cleanDescription = data.description?.trim() ||
+    (data.content ? data.content.replace(/<[^>]*>/g, ' ').trim().slice(0, 160) : '') ||
+    'Draft story in progress.';
 
   await c.env.DB.prepare(
     `INSERT INTO blogs (
@@ -486,19 +499,19 @@ blogsApp.post('/', async (c) => {
   ).bind(
     blogId,
     user.id,
-    data.title,
+    data.title.trim(),
     finalSlug,
-    data.description,
-    data.content,
+    cleanDescription,
+    data.content || '',
     data.cover_image || null,
     data.category_id || null,
-    data.status,
+    blogStatus,
     data.scheduled_at || null,
     publishedAt,
     readingTimeMinutes,
     wordCount,
-    data.seo_title || data.title,
-    data.seo_description || data.description,
+    data.seo_title || data.title.trim(),
+    data.seo_description || cleanDescription,
     now,
     now
   ).run();
@@ -527,10 +540,10 @@ blogsApp.post('/', async (c) => {
   await c.env.DB.prepare(
     `INSERT INTO blog_revisions (id, blog_id, title, description, content, created_at)
      VALUES (?, ?, ?, ?, ?, ?)`
-  ).bind('rev_' + crypto.randomUUID().slice(0, 16), blogId, data.title, data.description, data.content, now).run();
+  ).bind('rev_' + crypto.randomUUID().slice(0, 16), blogId, data.title, cleanDescription, data.content || '', now).run();
 
   // If published, award points & check achievements
-  if (data.status === 'published') {
+  if (blogStatus === 'published') {
     const config = await getRewardConfig(c.env.DB);
     await awardPoints(
       c.env.DB,
@@ -578,6 +591,15 @@ blogsApp.put('/:id', async (c) => {
   }
 
   const data = parsed.data;
+
+  // If publishing, ensure content has substance
+  if (data.status === 'published') {
+    const finalContent = data.content !== undefined ? data.content : existing.content;
+    if (!finalContent || finalContent.trim().length < 10) {
+      return c.json({ error: 'Article content must be at least 10 characters to publish' }, 400);
+    }
+  }
+
   const now = Date.now();
 
   // Save current state into revision history
@@ -594,8 +616,8 @@ blogsApp.put('/:id', async (c) => {
   ).run();
 
   let { wordCount, readingTimeMinutes } = { wordCount: 0, readingTimeMinutes: 1 };
-  if (data.content) {
-    const stats = calculateReadingStats(data.content);
+  if (data.content !== undefined) {
+    const stats = calculateReadingStats(data.content || '');
     wordCount = stats.wordCount;
     readingTimeMinutes = stats.readingTimeMinutes;
   }
@@ -605,15 +627,15 @@ blogsApp.put('/:id', async (c) => {
 
   if (data.title !== undefined) {
     updates.push('title = ?');
-    params.push(data.title);
+    params.push(data.title.trim());
   }
   if (data.description !== undefined) {
     updates.push('description = ?');
-    params.push(data.description);
+    params.push(data.description ? data.description.trim() : '');
   }
   if (data.content !== undefined) {
     updates.push('content = ?', 'word_count = ?', 'reading_time_minutes = ?');
-    params.push(data.content, wordCount, readingTimeMinutes);
+    params.push(data.content || '', wordCount, readingTimeMinutes);
   }
   if (data.cover_image !== undefined) {
     updates.push('cover_image = ?');
@@ -644,6 +666,27 @@ blogsApp.put('/:id', async (c) => {
     params.push(data.seo_description);
   }
 
+  // Update tags if provided
+  if (data.tags && Array.isArray(data.tags)) {
+    await c.env.DB.prepare(`DELETE FROM blog_tags WHERE blog_id = ?`).bind(blogId).run();
+    for (const tagName of data.tags.slice(0, 5)) {
+      const cleanTag = tagName.trim().toLowerCase();
+      if (!cleanTag) continue;
+      const tagSlug = cleanTag.replace(/[^\w-]/g, '-');
+      let tag = await c.env.DB.prepare(`SELECT id FROM tags WHERE slug = ?`).bind(tagSlug).first<{ id: string }>();
+      let tagId = tag?.id;
+      if (!tagId) {
+        tagId = 'tag_' + crypto.randomUUID().slice(0, 12);
+        await c.env.DB.prepare(
+          `INSERT INTO tags (id, name, slug, created_at) VALUES (?, ?, ?, ?)`
+        ).bind(tagId, cleanTag, tagSlug, now).run();
+      }
+      await c.env.DB.prepare(
+        `INSERT OR IGNORE INTO blog_tags (blog_id, tag_id) VALUES (?, ?)`
+      ).bind(blogId, tagId).run();
+    }
+  }
+
   params.push(blogId);
 
   await c.env.DB.prepare(
@@ -665,10 +708,15 @@ blogsApp.put('/:id', async (c) => {
     await checkWritingStreak(c.env.DB, existing.author_id);
   }
 
-  return c.json({ success: true, message: 'Blog updated' });
+  return c.json({
+    success: true,
+    message: 'Blog updated',
+    blog_id: blogId,
+    status: data.status || existing.status
+  });
 });
 
-// DELETE /api/blogs/:id - Delete blog
+// DELETE /api/blogs/:id - Delete blog with clean cascade
 blogsApp.delete('/:id', async (c) => {
   const user = requireAuth(c);
   const blogId = c.req.param('id');
@@ -685,7 +733,16 @@ blogsApp.delete('/:id', async (c) => {
     return c.json({ error: 'Unauthorized to delete this blog' }, 403);
   }
 
-  await c.env.DB.prepare(`DELETE FROM blogs WHERE id = ?`).bind(blogId).run();
+  await c.env.DB.batch([
+    c.env.DB.prepare(`DELETE FROM blog_tags WHERE blog_id = ?`).bind(blogId),
+    c.env.DB.prepare(`DELETE FROM blog_revisions WHERE blog_id = ?`).bind(blogId),
+    c.env.DB.prepare(`DELETE FROM reactions WHERE blog_id = ?`).bind(blogId),
+    c.env.DB.prepare(`DELETE FROM blog_views WHERE blog_id = ?`).bind(blogId),
+    c.env.DB.prepare(`DELETE FROM comments WHERE blog_id = ?`).bind(blogId),
+    c.env.DB.prepare(`DELETE FROM bookmarks WHERE blog_id = ?`).bind(blogId),
+    c.env.DB.prepare(`DELETE FROM reports WHERE target_type = 'blog' AND target_id = ?`).bind(blogId),
+    c.env.DB.prepare(`DELETE FROM blogs WHERE id = ?`).bind(blogId),
+  ]);
 
   return c.json({ success: true, message: 'Blog deleted' });
 });

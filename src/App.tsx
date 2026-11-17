@@ -18,6 +18,7 @@ import { PointsHistoryPage } from './pages/PointsHistoryPage';
 import { AdminPage } from './pages/AdminPage';
 import { BookmarksPage } from './pages/BookmarksPage';
 import { OnboardingPage } from './pages/OnboardingPage';
+import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export const App: React.FC = () => {
@@ -55,6 +56,7 @@ export const App: React.FC = () => {
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/bookmarks" element={<BookmarksPage />} />
                 <Route path="/onboarding" element={<OnboardingPage />} />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>

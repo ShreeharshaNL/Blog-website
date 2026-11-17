@@ -10,7 +10,7 @@ not_found_handling = "single-page-application"
 [[d1_databases]]
 binding = "DB"
 database_name = "inkverse-db"
-database_id = "inkverse-db-prod"
+database_id = "6cc7f367-c7d6-4961-8b78-974ad5ccf32b"
 migrations_dir = "migrations"
 
 [[r2_buckets]]
@@ -19,7 +19,7 @@ bucket_name = "inkverse-media"
 
 [[kv_namespaces]]
 binding = "KV"
-id = "inkverse-kv-prod"
+id = "9e6351353da1406ca8a08965d65fe340"
 
 [vars]
 ENVIRONMENT = "production"

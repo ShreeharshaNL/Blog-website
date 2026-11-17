@@ -201,7 +201,21 @@ export const BlogDetailPage: React.FC = () => {
 
   const isAuthor = user?.id === blog.author_id;
   const sanitizedContent = DOMPurify.sanitize(blog.content, {
-    ADD_ATTR: ['target', 'id'],
+    ADD_TAGS: ['video', 'source'],
+    ADD_ATTR: [
+      'target',
+      'id',
+      'controls',
+      'autoplay',
+      'loop',
+      'muted',
+      'poster',
+      'preload',
+      'playsinline',
+      'class',
+      'src',
+      'type',
+    ],
   });
 
   return (

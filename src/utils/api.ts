@@ -72,3 +72,27 @@ export async function apiRequest<T = any>(
 
   return data as T;
 }
+
+export interface UploadMediaResult {
+  success: boolean;
+  url: string;
+  fileKey: string;
+  size: number;
+  mimeType: string;
+  mediaType: 'image' | 'video';
+}
+
+/**
+ * Upload an image or video file directly to website storage.
+ * Automatically handles multipart/form-data upload and credentials.
+ */
+export async function uploadMedia(file: File): Promise<UploadMediaResult> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return apiRequest<UploadMediaResult>('/api/upload', {
+    method: 'POST',
+    body: formData,
+  });
+}
+
