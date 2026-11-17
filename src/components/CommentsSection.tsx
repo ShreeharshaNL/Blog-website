@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageSquare, Heart, Reply, Trash2, Edit2, Flag, Send } from 'lucide-react';
 import { Comment, PublicUser } from '../types';
 import { apiRequest } from '../utils/api';
@@ -19,7 +19,8 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
   onOpenLogin,
 }) => {
   const { user } = useAuth();
-  const [comments, setComments] = useState<Comment[]>(initialComments);
+  const [comments, setComments] = useState<Comment[]>(initialComments || []);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
@@ -27,6 +28,29 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState('');
   const [reportTarget, setReportTarget] = useState<{ id: string; text: string } | null>(null);
+
+  // Fetch comments on mount and when blogId changes
+  useEffect(() => {
+    let isMounted = true;
+    async function loadComments() {
+      if (!blogId) return;
+      setIsLoadingComments(true);
+      try {
+        const res = await apiRequest<{ comments: Comment[] }>(`/api/comments/${blogId}/comments`);
+        if (isMounted && res.comments) {
+          setComments(res.comments);
+        }
+      } catch (err) {
+        console.error('Failed to load comments:', err);
+      } finally {
+        if (isMounted) setIsLoadingComments(false);
+      }
+    }
+    loadComments();
+    return () => {
+      isMounted = false;
+    };
+  }, [blogId]);
 
   // Submit root comment
   const handleSubmitComment = async (e: React.FormEvent) => {
@@ -183,7 +207,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
       <div
         key={comment.id}
         id={`comment-${comment.id}`}
-        className={`group/comment text-sm ${isReply ? 'ml-8 pl-4 border-l-2 border-border mt-3' : 'pt-4'}`}
+        className={`group/comment text-sm ${isReply ? 'ml-3 sm:ml-8 pl-2.5 sm:pl-4 border-l-2 border-border mt-3' : 'pt-4'}`}
       >
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex items-center gap-2.5">
@@ -193,7 +217,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
                 `https://api.dicebear.com/7.x/identicon/svg?seed=${comment.author.username}`
               }
               alt=""
-              className="w-7 h-7 rounded-full object-cover border border-border"
+              className="w-7 h-7 rounded-full object-cover border border-border shrink-0"
             />
             <div>
               <div className="flex items-center gap-2">
@@ -273,13 +297,13 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
             </div>
           </div>
         ) : (
-          <p className="text-xs text-foreground/90 leading-relaxed break-words whitespace-pre-wrap pl-9">
+          <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed break-words whitespace-pre-wrap pl-0 sm:pl-9 mt-1">
             {comment.content}
           </p>
         )}
 
         {/* Bottom bar: Like & Reply button */}
-        <div className="flex items-center gap-4 mt-2 pl-9 text-xs text-foreground-subtle">
+        <div className="flex items-center gap-4 mt-2 pl-0 sm:pl-9 text-xs text-foreground-subtle">
           <button
             onClick={() => handleLikeComment(comment.id)}
             className={`flex items-center gap-1 hover:text-rose-400 transition-colors ${
@@ -314,7 +338,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
 
         {/* Reply Input Box */}
         {replyingTo === comment.id && (
-          <div className="mt-3 ml-9 p-3 rounded-xl bg-background-elevated/40 border border-border">
+          <div className="mt-3 ml-0 sm:ml-9 p-3 rounded-xl bg-background-elevated/40 border border-border">
             <textarea
               rows={2}
               value={replyText}
@@ -350,7 +374,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
   };
 
   return (
-    <section className="pt-10 mt-12 border-t border-border">
+    <section className="pt-8 sm:pt-10 mt-8 sm:mt-12 border-t border-border">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-serif text-2xl font-bold flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-primary" />
@@ -409,7 +433,19 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({
 
       {/* Comments List */}
       <div className="divide-y divide-border/60">
-        {comments.length === 0 ? (
+        {isLoadingComments ? (
+          <div className="space-y-4 py-6">
+            {[1, 2].map((i) => (
+              <div key={i} className="space-y-2 animate-pulse">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-full bg-border" />
+                  <div className="w-28 h-3.5 bg-border rounded" />
+                </div>
+                <div className="w-full h-10 bg-border/40 rounded-xl" />
+              </div>
+            ))}
+          </div>
+        ) : comments.length === 0 ? (
           <p className="text-xs text-foreground-subtle text-center py-6">
             No responses yet. Be the first to share your thoughts!
           </p>

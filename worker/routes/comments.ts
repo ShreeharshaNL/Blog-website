@@ -5,10 +5,17 @@ import { requireAuth } from '../auth';
 
 const commentsApp = new Hono<{ Bindings: Env; Variables: HonoVariables }>();
 
-// GET /api/blogs/:id/comments - List comments for a blog
+// GET /api/blogs/:id/comments or /api/comments/:id/comments - List comments for a blog
 commentsApp.get('/:id/comments', async (c) => {
-  const blogId = c.req.param('id');
+  const paramId = c.req.param('id');
   const currentUser = c.get('user');
+
+  // Support querying by either blog ID or blog slug
+  const blog = await c.env.DB.prepare(
+    `SELECT id FROM blogs WHERE id = ? OR slug = ?`
+  ).bind(paramId, paramId).first<{ id: string }>();
+
+  const blogId = blog ? blog.id : paramId;
 
   const query = `
     SELECT
@@ -96,10 +103,10 @@ commentsApp.post('/:id/comments', async (c) => {
     return c.json({ error: 'Validation failed', details: parsed.error.issues }, 400);
   }
 
-  // Verify blog exists
+  // Verify blog exists (supports either blog ID or blog slug)
   const blog = await c.env.DB.prepare(
-    `SELECT id, author_id, title FROM blogs WHERE id = ?`
-  ).bind(blogId).first<{ id: string; author_id: string; title: string }>();
+    `SELECT id, author_id, title FROM blogs WHERE id = ? OR slug = ?`
+  ).bind(blogId, blogId).first<{ id: string; author_id: string; title: string }>();
 
   if (!blog) {
     return c.json({ error: 'Blog not found' }, 404);
@@ -153,7 +160,7 @@ commentsApp.post('/:id/comments', async (c) => {
     success: true,
     comment: {
       id: commentId,
-      blog_id: blogId,
+      blog_id: blog.id,
       author_id: user.id,
       parent_id: parent_id || null,
       content,

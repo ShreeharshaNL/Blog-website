@@ -66,7 +66,7 @@ export const BlogDetailPage: React.FC = () => {
 
         // Check if following author
         if (user && data.blog.author && user.id !== data.blog.author_id) {
-          apiRequest<{ user: { is_following: boolean } }>(`/@${data.blog.author.username}`)
+          apiRequest<{ user: { is_following: boolean } }>(`/api/users/@${data.blog.author.username}`)
             .then(res => setIsFollowing(Boolean(res.user?.is_following)))
             .catch(() => {});
         }
@@ -378,13 +378,13 @@ export const BlogDetailPage: React.FC = () => {
             )}
 
             {/* Engagement Action Bar */}
-            <div className="sticky bottom-4 z-30 p-3 sm:p-4 rounded-2xl bg-background-surface/90 backdrop-blur-md border border-border shadow-2xl flex items-center justify-between">
+            <div className="sticky bottom-4 z-30 p-2.5 sm:p-4 rounded-2xl bg-background-surface/90 backdrop-blur-md border border-border shadow-2xl flex items-center justify-between gap-2">
               {/* Reactions: Like & Dislike */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 {/* Like Button */}
                 <button
                   onClick={() => handleReaction('like')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                  className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all shrink-0 ${
                     userReaction === 'like'
                       ? 'bg-rose-500/10 text-rose-400 border-rose-500/40 shadow-sm shadow-rose-950/20'
                       : 'border-border hover:bg-background-elevated text-foreground-muted hover:text-foreground'
@@ -402,7 +402,7 @@ export const BlogDetailPage: React.FC = () => {
                 {/* Dislike Button (NO PUBLIC COUNT EVER DISPLAYED!) */}
                 <button
                   onClick={() => handleReaction('dislike')}
-                  className={`p-2 rounded-xl text-xs border transition-all ${
+                  className={`p-2 rounded-xl text-xs border transition-all shrink-0 ${
                     userReaction === 'dislike'
                       ? 'bg-orange-500/20 text-orange-600 dark:text-orange-300 border-orange-500/40'
                       : 'border-border hover:bg-background-elevated text-foreground-muted hover:text-foreground'
@@ -419,7 +419,7 @@ export const BlogDetailPage: React.FC = () => {
                 {/* Private Dislike Stats Indicator (ONLY FOR AUTHOR WHEN ENABLED) */}
                 {isAuthor && blog.dislike_count !== undefined && (
                   <span
-                    className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono bg-orange-950/30 border border-orange-500/30 text-orange-300"
+                    className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-mono bg-orange-950/30 border border-orange-500/30 text-orange-300 shrink-0"
                     title="Private dislike analytics visible only to you as author"
                   >
                     <Lock className="w-3 h-3 text-orange-400" />
@@ -429,10 +429,10 @@ export const BlogDetailPage: React.FC = () => {
               </div>
 
               {/* Share, Bookmark & Report */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button
                   onClick={handleBookmark}
-                  className={`p-2 rounded-xl border transition-colors ${
+                  className={`p-2 rounded-xl border transition-colors shrink-0 ${
                     isBookmarked
                       ? 'bg-primary text-white border-primary'
                       : 'border-border hover:bg-background-elevated text-foreground-muted hover:text-foreground'
@@ -444,15 +444,15 @@ export const BlogDetailPage: React.FC = () => {
 
                 <button
                   onClick={() => setIsShareModalOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle text-xs font-semibold text-foreground transition-colors"
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-border bg-background-elevated hover:bg-background-subtle text-xs font-semibold text-foreground transition-colors shrink-0"
                 >
                   <Share2 className="w-3.5 h-3.5" />
-                  <span>Share</span>
+                  <span className="hidden xs:inline">Share</span>
                 </button>
 
                 <button
                   onClick={() => setIsReportModalOpen(true)}
-                  className="p-2 rounded-xl text-foreground-subtle hover:text-amber-400 transition-colors"
+                  className="p-2 rounded-xl text-foreground-subtle hover:text-amber-400 transition-colors shrink-0"
                   title="Report story"
                 >
                   <Flag className="w-3.5 h-3.5" />

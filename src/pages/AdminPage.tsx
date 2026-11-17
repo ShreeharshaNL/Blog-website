@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Shield,
@@ -13,14 +13,42 @@ import {
   ArrowLeft,
   RotateCcw,
   Activity,
+  Lock,
+  Unlock,
+  Eye,
+  EyeOff,
+  KeyRound,
+  ShieldAlert,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { apiRequest } from '../utils/api';
 import { User, ReportItem, AdminAuditLog } from '../types';
 
+const ADMIN_STORAGE_KEY = 'inkverse_admin_password';
+
 export const AdminPage: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'reports' | 'settings' | 'reversal' | 'logs'>('overview');
+
+  // Master passcode authentication state
+  const [adminPass, setAdminPass] = useState<string>(() => {
+    try {
+      return sessionStorage.getItem(ADMIN_STORAGE_KEY) || '';
+    } catch {
+      return '';
+    }
+  });
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem(ADMIN_STORAGE_KEY) === 'shnl2005';
+    } catch {
+      return false;
+    }
+  });
+  const [passwordInput, setPasswordInput] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [stats, setStats] = useState<any>(null);
   const [usersList, setUsersList] = useState<User[]>([]);
@@ -34,32 +62,86 @@ export const AdminPage: React.FC = () => {
   const [reversalReason, setReversalReason] = useState('');
   const [isReversing, setIsReversing] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Authenticated Admin API client helper (automatically attaches x-admin-password)
+  const adminApi = useCallback(<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> => {
+    const currentPass = adminPass || sessionStorage.getItem(ADMIN_STORAGE_KEY) || '';
+    return apiRequest<T>(endpoint, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        'x-admin-password': currentPass,
+      },
+    });
+  }, [adminPass]);
+
+  // Handle Password Unlock
+  const handleUnlock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanPass = passwordInput.trim();
+    if (!cleanPass) {
+      setAuthError('Please enter the admin password');
+      return;
+    }
+
+    setIsVerifying(true);
+    setAuthError(null);
+
+    try {
+      const res = await apiRequest<{ success: boolean; message?: string }>('/api/admin/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: cleanPass }),
+      });
+
+      if (res.success) {
+        sessionStorage.setItem(ADMIN_STORAGE_KEY, cleanPass);
+        setAdminPass(cleanPass);
+        setIsUnlocked(true);
+        setPasswordInput('');
+      } else {
+        setAuthError('Incorrect password. Access denied.');
+      }
+    } catch (err: any) {
+      setAuthError(err.message || 'Incorrect password. Access denied.');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleLock = () => {
+    sessionStorage.removeItem(ADMIN_STORAGE_KEY);
+    setAdminPass('');
+    setIsUnlocked(false);
+    setPasswordInput('');
+    setAuthError(null);
+  };
 
   useEffect(() => {
     async function loadAdminData() {
-      if (!user || (user.role !== 'admin' && user.role !== 'moderator')) return;
+      if (!isUnlocked) return;
       setIsLoading(true);
 
       try {
         if (activeTab === 'overview') {
-          const res = await apiRequest<{ stats: any; popular_categories: any[] }>('/api/admin/stats');
+          const res = await adminApi<{ stats: any; popular_categories: any[] }>('/api/admin/stats');
           setStats(res);
         } else if (activeTab === 'users') {
-          const res = await apiRequest<{ users: User[] }>(`/api/admin/users?search=${encodeURIComponent(userSearch)}`);
+          const res = await adminApi<{ users: User[] }>(`/api/admin/users?search=${encodeURIComponent(userSearch)}`);
           setUsersList(res.users || []);
         } else if (activeTab === 'reports') {
-          const res = await apiRequest<{ reports: ReportItem[] }>('/api/admin/reports');
+          const res = await adminApi<{ reports: ReportItem[] }>('/api/admin/reports');
           setReportsList(res.reports || []);
         } else if (activeTab === 'settings') {
-          const res = await apiRequest<{ settings: { key: string; value: string }[] }>('/api/admin/settings');
+          const res = await adminApi<{ settings: { key: string; value: string }[] }>('/api/admin/settings');
           const map: Record<string, string> = {};
           (res.settings || []).forEach((s) => {
             map[s.key] = s.value;
           });
           setSettings(map);
         } else if (activeTab === 'logs') {
-          const res = await apiRequest<{ audit_logs: AdminAuditLog[] }>('/api/admin/audit-logs');
+          const res = await adminApi<{ audit_logs: AdminAuditLog[] }>('/api/admin/audit-logs');
           setAuditLogs(res.audit_logs || []);
         }
       } catch (err) {
@@ -70,11 +152,11 @@ export const AdminPage: React.FC = () => {
     }
 
     loadAdminData();
-  }, [activeTab, userSearch, user]);
+  }, [activeTab, userSearch, isUnlocked, adminApi]);
 
   const handleUpdateUserStatus = async (targetId: string, newStatus: string) => {
     try {
-      await apiRequest(`/api/admin/users/${targetId}`, {
+      await adminApi(`/api/admin/users/${targetId}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: newStatus }),
       });
@@ -88,7 +170,7 @@ export const AdminPage: React.FC = () => {
 
   const handleUpdateUserRole = async (targetId: string, newRole: string) => {
     try {
-      await apiRequest(`/api/admin/users/${targetId}`, {
+      await adminApi(`/api/admin/users/${targetId}`, {
         method: 'PATCH',
         body: JSON.stringify({ role: newRole }),
       });
@@ -102,7 +184,7 @@ export const AdminPage: React.FC = () => {
 
   const handleResolveReport = async (reportId: string, action: 'resolved' | 'dismissed', deleteTarget = false) => {
     try {
-      await apiRequest(`/api/admin/reports/${reportId}/resolve`, {
+      await adminApi(`/api/admin/reports/${reportId}/resolve`, {
         method: 'POST',
         body: JSON.stringify({ action, delete_target: deleteTarget }),
       });
@@ -115,7 +197,7 @@ export const AdminPage: React.FC = () => {
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await apiRequest('/api/admin/settings', {
+      await adminApi('/api/admin/settings', {
         method: 'PUT',
         body: JSON.stringify(settings),
       });
@@ -131,7 +213,7 @@ export const AdminPage: React.FC = () => {
 
     setIsReversing(true);
     try {
-      await apiRequest('/api/admin/points/reverse', {
+      await adminApi('/api/admin/points/reverse', {
         method: 'POST',
         body: JSON.stringify({
           transaction_id: reversalTxId.trim(),
@@ -148,17 +230,83 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  if (!user || (user.role !== 'admin' && user.role !== 'moderator')) {
+  // If NOT unlocked, render Master Password Gate
+  if (!isUnlocked) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-24 text-center">
-        <Shield className="w-12 h-12 text-rose-400 mx-auto mb-4" />
-        <h2 className="font-serif text-3xl font-bold mb-3">Access Restricted</h2>
-        <p className="text-sm text-foreground-muted mb-6">
-          Administrator or Staff privileges are required to access this panel.
-        </p>
-        <Link to="/" className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white transition-colors">
-          Return Home
-        </Link>
+      <div className="max-w-md mx-auto px-4 py-20 animate-fade-in">
+        <div className="rounded-3xl border border-border bg-background-surface/90 backdrop-blur-md p-6 sm:p-8 shadow-2xl shadow-black/20 text-center space-y-6">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto shadow-inner">
+            <Lock className="w-7 h-7" />
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              Admin Portal
+            </h2>
+            <p className="text-xs text-foreground-muted leading-relaxed">
+              Restricted management zone. Enter the administration password to unlock platform controls.
+            </p>
+          </div>
+
+          {authError && (
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs flex items-center justify-center gap-2 animate-shake">
+              <ShieldAlert className="w-4 h-4 shrink-0" />
+              <span>{authError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleUnlock} className="space-y-4">
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={passwordInput}
+                onChange={(e) => {
+                  setPasswordInput(e.target.value);
+                  setAuthError(null);
+                }}
+                placeholder="Enter password..."
+                autoFocus
+                className="w-full text-sm px-4 py-3 rounded-xl border border-border bg-background-elevated text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary pr-11"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-foreground-subtle hover:text-foreground p-1 transition-colors"
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isVerifying || !passwordInput.trim()}
+              className="w-full py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider bg-primary hover:bg-orange-600 text-white shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2 disabled:opacity-40 cursor-pointer"
+            >
+              {isVerifying ? (
+                <>
+                  <RotateCcw className="w-4 h-4 animate-spin" />
+                  <span>Verifying...</span>
+                </>
+              ) : (
+                <>
+                  <KeyRound className="w-4 h-4" />
+                  <span>Unlock Admin Panel</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="pt-2 border-t border-border/60">
+            <Link
+              to="/"
+              className="text-xs text-foreground-muted hover:text-foreground inline-flex items-center gap-1.5 transition-colors font-medium"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Return to Public Website</span>
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -177,19 +325,34 @@ export const AdminPage: React.FC = () => {
                 INKVERSE Admin Panel
               </h1>
               <p className="text-xs text-foreground-muted mt-0.5">
-                Logged in as <strong>@{user.username}</strong> ({user.role})
+                {user ? (
+                  <>Logged in as <strong>@{user.username}</strong> ({user.role})</>
+                ) : (
+                  <>Authenticated as <strong>Administrator</strong> (Master Passcode)</>
+                )}
               </p>
             </div>
           </div>
         </div>
 
-        <Link
-          to="/dashboard"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-border bg-background-surface hover:bg-background-elevated"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Author Dashboard</span>
-        </Link>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleLock}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-rose-500/30 bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 transition-colors cursor-pointer"
+            title="Lock administrative console"
+          >
+            <Lock className="w-3.5 h-3.5" />
+            <span>Lock Admin</span>
+          </button>
+
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-border bg-background-surface hover:bg-background-elevated"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Dashboard</span>
+          </Link>
+        </div>
       </div>
 
       {/* Tabs */}

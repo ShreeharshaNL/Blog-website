@@ -1,10 +1,20 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { Env, HonoVariables } from '../types';
-import { requireAdmin, requireStaff } from '../auth';
+import { requireAdmin, requireStaff, ADMIN_PASSCODE } from '../auth';
 import { awardPoints } from '../gamification';
 
 const adminApp = new Hono<{ Bindings: Env; Variables: HonoVariables }>();
+
+// POST /api/admin/verify - Verify admin passcode ("shnl2005")
+adminApp.post('/verify', async (c) => {
+  const body = await c.req.json().catch(() => ({}));
+  const password = body.password || c.req.header('x-admin-password') || c.req.header('X-Admin-Password');
+  if (password === ADMIN_PASSCODE) {
+    return c.json({ success: true, message: 'Admin passcode verified' });
+  }
+  return c.json({ success: false, error: 'Incorrect admin passcode' }, 401);
+});
 
 // Helper: record admin audit log
 async function logAdminAction(

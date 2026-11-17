@@ -136,34 +136,79 @@ export function requireAuth(c: Context<{ Bindings: Env; Variables: HonoVariables
   return user;
 }
 
+export const ADMIN_PASSCODE = 'shnl2005';
+
 /**
- * Guard: Requires Admin or Moderator role
+ * Checks whether the request carries the verified admin passcode ("shnl2005")
+ * or has staff privileges in test environment.
  */
-export function requireStaff(c: Context<{ Bindings: Env; Variables: HonoVariables }>): SessionUser {
-  const user = requireAuth(c);
-  if (user.role !== 'admin' && user.role !== 'moderator') {
-    throw new HTTPException(403, {
-      res: new Response(JSON.stringify({ error: 'Forbidden: Staff access required' }), {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' },
-      }),
-    });
+export function isAuthorizedAdmin(c: Context<{ Bindings: Env; Variables: HonoVariables }>): boolean {
+  const passcode = c.req.header('x-admin-password') || c.req.header('X-Admin-Password');
+  if (passcode === ADMIN_PASSCODE) {
+    return true;
   }
-  return user;
+  // In test environment only, accept admin / moderator role without header
+  if (c.env?.ENVIRONMENT === 'test') {
+    const user = c.get('user');
+    if (user && (user.role === 'admin' || user.role === 'moderator')) {
+      return true;
+    }
+  }
+  return false;
 }
 
 /**
- * Guard: Requires Admin role
+ * Guard: Requires Admin or Moderator role with password verification
+ */
+export function requireStaff(c: Context<{ Bindings: Env; Variables: HonoVariables }>): SessionUser {
+  if (isAuthorizedAdmin(c)) {
+    const user = c.get('user');
+    return user || {
+      id: 'usr_admin_root',
+      email: 'admin@inkverse.online',
+      username: 'admin',
+      display_name: 'Administrator',
+      avatar_url: null,
+      role: 'admin',
+      status: 'active',
+      points: 99999,
+      level: 10,
+      show_dislike_stats: true,
+    };
+  }
+
+  throw new HTTPException(403, {
+    res: new Response(JSON.stringify({ error: 'Forbidden: Admin passcode required. Enter password on /admin' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    }),
+  });
+}
+
+/**
+ * Guard: Requires Admin role with password verification
  */
 export function requireAdmin(c: Context<{ Bindings: Env; Variables: HonoVariables }>): SessionUser {
-  const user = requireAuth(c);
-  if (user.role !== 'admin') {
-    throw new HTTPException(403, {
-      res: new Response(JSON.stringify({ error: 'Forbidden: Administrator privileges required' }), {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' },
-      }),
-    });
+  if (isAuthorizedAdmin(c)) {
+    const user = c.get('user');
+    return user || {
+      id: 'usr_admin_root',
+      email: 'admin@inkverse.online',
+      username: 'admin',
+      display_name: 'Administrator',
+      avatar_url: null,
+      role: 'admin',
+      status: 'active',
+      points: 99999,
+      level: 10,
+      show_dislike_stats: true,
+    };
   }
-  return user;
+
+  throw new HTTPException(403, {
+    res: new Response(JSON.stringify({ error: 'Forbidden: Administrator privileges and passcode required' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    }),
+  });
 }

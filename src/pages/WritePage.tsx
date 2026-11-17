@@ -298,7 +298,7 @@ export const WritePage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 pb-28 sm:pb-8">
       {/* Restored Local Draft Banner */}
       {hasRestoredLocal && (
         <div className="p-3 px-4 rounded-xl border border-amber-500/30 bg-amber-500/10 flex items-center justify-between text-xs text-amber-700 dark:text-amber-300">
@@ -317,19 +317,19 @@ export const WritePage: React.FC = () => {
       )}
 
       {/* Top Action Bar */}
-      <div className="flex items-center justify-between pb-4 border-b border-border">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between pb-4 border-b border-border gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             onClick={() => navigate('/dashboard')}
             className="inline-flex items-center gap-1.5 text-xs text-foreground-muted hover:text-foreground font-semibold"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Dashboard</span>
+            <ArrowLeft className="w-4 h-4 shrink-0" />
+            <span className="hidden sm:inline">Dashboard</span>
           </button>
 
           {/* Status Badge */}
           <span
-            className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+            className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0 ${
               status === 'published'
                 ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30'
                 : 'bg-amber-500/10 text-amber-500 border border-amber-500/30'
@@ -339,15 +339,15 @@ export const WritePage: React.FC = () => {
           </span>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Status Message or Last Saved */}
           {saveMessage ? (
             <span className="inline-flex items-center gap-1 text-[11px] text-emerald-500 font-semibold animate-fade-in">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>{saveMessage}</span>
+              <span className="hidden xs:inline">{saveMessage}</span>
             </span>
           ) : lastSaved ? (
-            <span className="hidden sm:inline-flex items-center gap-1 text-[11px] text-foreground-subtle font-mono">
+            <span className="hidden md:inline-flex items-center gap-1 text-[11px] text-foreground-subtle font-mono">
               <Clock className="w-3 h-3 text-emerald-400" />
               <span>Saved {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </span>
@@ -357,21 +357,22 @@ export const WritePage: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsPreview(!isPreview)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${
+            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors shrink-0 ${
               isPreview
                 ? 'bg-primary/20 text-primary border-primary/40'
                 : 'border-border bg-background-surface hover:bg-background-elevated text-foreground-muted'
             }`}
+            title={isPreview ? 'Switch to Editor' : 'Preview Article'}
           >
             {isPreview ? <Edit3 className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-            <span>{isPreview ? 'Editor' : 'Preview'}</span>
+            <span className="hidden sm:inline">{isPreview ? 'Editor' : 'Preview'}</span>
           </button>
 
           {/* SEO & Settings Drawer Toggle */}
           <button
             type="button"
             onClick={() => setShowSettings(!showSettings)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer shrink-0 ${
               showSettings
                 ? 'bg-primary text-white border-primary shadow-sm shadow-primary/25'
                 : 'border-border bg-background-surface hover:bg-background-elevated text-foreground-muted hover:text-foreground'
@@ -379,26 +380,28 @@ export const WritePage: React.FC = () => {
             title="Publishing Settings & SEO"
           >
             <Settings className={`w-3.5 h-3.5 transition-transform ${showSettings ? 'rotate-90 text-white' : ''}`} />
-            <span>Settings</span>
+            <span className="hidden sm:inline">Settings</span>
           </button>
 
-          {/* Save Draft */}
+          {/* Save Draft (desktop) */}
           <button
             type="button"
             onClick={() => handleSave('draft')}
             disabled={isSaving}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-border bg-background-surface hover:bg-background-elevated text-foreground transition-colors disabled:opacity-40"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-border bg-background-surface hover:bg-background-elevated text-foreground transition-colors disabled:opacity-40 shrink-0"
+            title="Save as Draft"
           >
             <Save className="w-3.5 h-3.5" />
             <span>{isSaving && status === 'draft' ? 'Saving...' : 'Save Draft'}</span>
           </button>
 
-          {/* Publish / Update */}
+          {/* Publish / Update (visible everywhere, prominent) */}
           <button
             type="button"
             onClick={() => handleSave('published')}
             disabled={isSaving}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white shadow-md shadow-primary/20 transition-all disabled:opacity-40 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-white shadow-md shadow-primary/20 transition-all disabled:opacity-40 cursor-pointer shrink-0"
+            title={status === 'published' ? 'Update Story' : 'Publish Story'}
           >
             <Send className="w-3.5 h-3.5" />
             <span>
@@ -759,6 +762,48 @@ export const WritePage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Mobile Sticky Bottom Action Bar - Guarantees Publish button is ALWAYS fully visible & accessible */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-background-surface/95 backdrop-blur-lg border-t border-border z-40 flex items-center gap-2 shadow-2xl">
+        <button
+          type="button"
+          onClick={() => setShowSettings(!showSettings)}
+          className={`p-2.5 rounded-xl border transition-colors shrink-0 ${
+            showSettings
+              ? 'bg-primary text-white border-primary'
+              : 'border-border bg-background-elevated text-foreground-muted'
+          }`}
+          title="Publishing Settings & SEO"
+        >
+          <Settings className="w-4 h-4" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleSave('draft')}
+          disabled={isSaving}
+          className="flex-1 py-2.5 px-3 rounded-xl text-xs font-semibold border border-border bg-background-elevated hover:bg-background-subtle text-foreground flex items-center justify-center gap-1.5 disabled:opacity-40"
+        >
+          <Save className="w-3.5 h-3.5" />
+          <span>{isSaving && status === 'draft' ? 'Saving...' : 'Save Draft'}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleSave('published')}
+          disabled={isSaving}
+          className="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold bg-primary hover:bg-primary-hover text-white shadow-lg shadow-primary/30 flex items-center justify-center gap-1.5 disabled:opacity-40 cursor-pointer"
+        >
+          <Send className="w-3.5 h-3.5" />
+          <span>
+            {isSaving && status === 'published'
+              ? 'Publishing...'
+              : status === 'published'
+              ? 'Update'
+              : 'Publish'}
+          </span>
+        </button>
+      </div>
     </div>
   );
 };

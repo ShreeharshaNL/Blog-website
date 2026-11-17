@@ -24,10 +24,10 @@ reactionsApp.post('/:id/reaction', async (c) => {
   const requestedType = parsed.data.type;
   const now = Date.now();
 
-  // Check blog exists
+  // Check blog exists (supports either blog ID or slug)
   const blog = await c.env.DB.prepare(
-    `SELECT id, author_id, like_count, dislike_count FROM blogs WHERE id = ?`
-  ).bind(blogId).first<{ id: string; author_id: string; like_count: number; dislike_count: number }>();
+    `SELECT id, author_id, like_count, dislike_count FROM blogs WHERE id = ? OR slug = ?`
+  ).bind(blogId, blogId).first<{ id: string; author_id: string; like_count: number; dislike_count: number }>();
 
   if (!blog) {
     return c.json({ error: 'Blog not found' }, 404);

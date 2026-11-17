@@ -384,8 +384,8 @@ blogsApp.post('/:slug/view', async (c) => {
   }
 
   const blog = await c.env.DB.prepare(
-    `SELECT id, author_id, view_count, status FROM blogs WHERE slug = ?`
-  ).bind(slug).first<{ id: string; author_id: string; view_count: number; status: string }>();
+    `SELECT id, author_id, view_count, status FROM blogs WHERE slug = ? OR id = ?`
+  ).bind(slug, slug).first<{ id: string; author_id: string; view_count: number; status: string }>();
 
   if (!blog || blog.status !== 'published') {
     return c.json({ error: 'Blog not found' }, 404);

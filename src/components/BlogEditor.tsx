@@ -306,11 +306,12 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
 
         {/* Direct Image Upload to Website */}
         <label
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground-muted hover:text-foreground hover:bg-background-elevated cursor-pointer transition-colors border border-border/60 hover:border-orange-500/50"
+          className="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground-muted hover:text-foreground hover:bg-background-elevated cursor-pointer transition-colors border border-border/60 hover:border-orange-500/50 shrink-0"
           title="Upload image from computer (stored directly on website)"
         >
           <ImageIcon className="w-3.5 h-3.5 text-primary" />
-          <span>Upload Image</span>
+          <span className="hidden sm:inline">Upload </span>
+          <span>Image</span>
           <input
             ref={imageInputRef}
             type="file"
@@ -323,11 +324,12 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
 
         {/* Direct Video Upload to Website */}
         <label
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground-muted hover:text-foreground hover:bg-background-elevated cursor-pointer transition-colors border border-border/60 hover:border-orange-500/50"
+          className="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground-muted hover:text-foreground hover:bg-background-elevated cursor-pointer transition-colors border border-border/60 hover:border-orange-500/50 shrink-0"
           title="Upload video from computer (stored directly on website)"
         >
           <VideoIcon className="w-3.5 h-3.5 text-primary" />
-          <span>Upload Video</span>
+          <span className="hidden sm:inline">Upload </span>
+          <span>Video</span>
           <input
             ref={videoInputRef}
             type="file"

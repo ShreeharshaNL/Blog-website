@@ -586,6 +586,36 @@ describe('INKVERSE API & Platform Verification', () => {
       expect(auditData.audit_logs.length).toBeGreaterThan(0);
       expect(auditData.audit_logs[0].action).toBe('reverse_points');
     });
+
+    it('should verify master admin password shnl2005 and allow access via x-admin-password header', async () => {
+      // 1. Wrong password verification fails
+      const badVerifyRes = await app.request('/api/admin/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: 'wrongpassword' }),
+      }, testEnv);
+      expect(badVerifyRes.status).toBe(401);
+      const badData = await badVerifyRes.json() as any;
+      expect(badData.success).toBe(false);
+
+      // 2. Correct password verification succeeds
+      const goodVerifyRes = await app.request('/api/admin/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: 'shnl2005' }),
+      }, testEnv);
+      expect(goodVerifyRes.status).toBe(200);
+      const goodData = await goodVerifyRes.json() as any;
+      expect(goodData.success).toBe(true);
+
+      // 3. Access admin stats using x-admin-password header without any user session
+      const statsRes = await app.request('/api/admin/stats', {
+        headers: { 'x-admin-password': 'shnl2005' },
+      }, testEnv);
+      expect(statsRes.status).toBe(200);
+      const statsData = await statsRes.json() as any;
+      expect(statsData.stats).toBeDefined();
+    });
   });
 
   describe('6. Comments, Threading & Author Moderation', () => {

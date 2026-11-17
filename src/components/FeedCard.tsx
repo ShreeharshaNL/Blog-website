@@ -73,7 +73,7 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
     setIsBookmarking(true);
 
     try {
-      await apiRequest(`/api/bookmarks/${blog.id}`, { method: 'POST' });
+      await apiRequest(`/api/blogs/${blog.id}/bookmark`, { method: 'POST' });
     } catch (err) {
       setIsBookmarked(previous);
     } finally {
@@ -90,9 +90,9 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
   return (
     <>
       <article className="group bg-background-surface/90 backdrop-blur-sm border border-border/80 rounded-xl hover:border-stone-500/50 dark:hover:border-stone-600/60 transition-colors duration-200 overflow-hidden shadow-sm">
-        <div className="p-5 sm:p-6 space-y-3.5">
+        <div className="p-4 sm:p-6 space-y-3.5">
           {/* Author Header */}
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 sm:gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
               <Link to={`/@${blog.author?.username}`} className="shrink-0">
                 <img
@@ -101,11 +101,11 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
                     `https://api.dicebear.com/7.x/identicon/svg?seed=${blog.author?.username}`
                   }
                   alt={blog.author?.display_name}
-                  className="w-8 h-8 rounded-full object-cover border border-border"
+                  className="w-8 h-8 rounded-full object-cover border border-border shrink-0"
                   loading="lazy"
                 />
               </Link>
-              <div className="flex items-center gap-1.5 text-xs truncate">
+              <div className="flex items-center gap-1.5 text-xs truncate flex-wrap sm:flex-nowrap">
                 <Link
                   to={`/@${blog.author?.username}`}
                   className="font-medium text-foreground hover:underline truncate"
@@ -114,8 +114,8 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
                 </Link>
                 <span className="text-foreground-subtle">·</span>
                 <span className="text-foreground-subtle whitespace-nowrap">{timeDisplay}</span>
-                <span className="text-foreground-subtle">·</span>
-                <span className="text-foreground-subtle whitespace-nowrap">{blog.reading_time_minutes} min read</span>
+                <span className="text-foreground-subtle hidden xs:inline">·</span>
+                <span className="text-foreground-subtle whitespace-nowrap hidden xs:inline">{blog.reading_time_minutes}m read</span>
               </div>
             </div>
 

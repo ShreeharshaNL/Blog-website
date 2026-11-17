@@ -141,8 +141,8 @@ export const HomePage: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       {/* Mobile filter switcher */}
-      <div className="lg:hidden mb-5 flex items-center justify-between border-b border-border pb-3">
-        <div className="flex items-center gap-1">
+      <div className="lg:hidden mb-5 flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+        <div className="flex items-center gap-1 overflow-x-auto py-0.5">
           <button
             onClick={() => setCurrentSort('latest')}
             className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${

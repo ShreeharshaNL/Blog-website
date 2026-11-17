@@ -32,7 +32,7 @@ app.use('*', cors({
   },
   credentials: true,
   allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-admin-password', 'X-Admin-Password'],
 }));
 
 // Apply authentication session context to all requests
@@ -51,6 +51,8 @@ app.get('/api/health', (c) => {
 app.route('/api/auth', authApp);
 app.route('/api/users', usersApp);
 app.route('/api/blogs', reactionsApp);
+app.route('/api/blogs', commentsApp);
+app.route('/api/blogs', bookmarksApp);
 app.route('/api/blogs', blogsApp);
 app.route('/api/comments', commentsApp);
 app.route('/api/dashboard', dashboardApp);

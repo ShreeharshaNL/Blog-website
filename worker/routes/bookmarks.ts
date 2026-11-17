@@ -1,4 +1,4 @@
-import { Hono } from 'hono';
+import { Hono, Context } from 'hono';
 import { Env, HonoVariables } from '../types';
 import { requireAuth } from '../auth';
 
@@ -49,9 +49,16 @@ bookmarksApp.get('/', async (c) => {
 });
 
 // POST /api/bookmarks/:id/toggle - Toggle bookmark
-export async function handleBookmarkToggle(c: any) {
+export async function handleBookmarkToggle(c: Context<{ Bindings: Env; Variables: HonoVariables }>) {
   const user = requireAuth(c);
-  const blogId = c.req.param('id');
+  const paramId = c.req.param('id');
+
+  // Support either blog ID or blog slug
+  const blog = await c.env.DB.prepare(
+    `SELECT id FROM blogs WHERE id = ? OR slug = ?`
+  ).bind(paramId, paramId).first<{ id: string }>();
+
+  const blogId = blog ? blog.id : paramId;
 
   const existing = await c.env.DB.prepare(
     `SELECT 1 FROM bookmarks WHERE user_id = ? AND blog_id = ?`
@@ -70,6 +77,7 @@ export async function handleBookmarkToggle(c: any) {
   }
 }
 
+bookmarksApp.post('/:id', handleBookmarkToggle);
 bookmarksApp.post('/:id/toggle', handleBookmarkToggle);
 bookmarksApp.post('/:id/bookmark', handleBookmarkToggle);
 
