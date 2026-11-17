@@ -89,4 +89,25 @@ app.onError((err, c) => {
   }, 500);
 });
 
+// SPA Fallback & Static Assets Handler
+app.notFound(async (c) => {
+  // If the path is under /api/, return a clean JSON 404
+  if (c.req.path.startsWith('/api/')) {
+    return c.json({ error: 'Endpoint not found' }, 404);
+  }
+
+  // Fallback to Cloudflare Assets (SPA single-page-application / dist/index.html)
+  if (c.env?.ASSETS) {
+    const assetRes = await c.env.ASSETS.fetch(c.req.raw);
+    if (assetRes.status === 404) {
+      // Guaranteed SPA fallback: fetch root index.html
+      const rootUrl = new URL('/', c.req.url);
+      return c.env.ASSETS.fetch(new Request(rootUrl.toString(), c.req.raw));
+    }
+    return assetRes;
+  }
+
+  return c.text('Not Found', 404);
+});
+
 export default app;

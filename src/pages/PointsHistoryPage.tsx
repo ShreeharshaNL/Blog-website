@@ -127,10 +127,12 @@ export const PointsHistoryPage: React.FC = () => {
                     </td>
 
                     <td className="py-3.5 px-4 sm:px-6 text-foreground-subtle font-mono text-[11px]">
-                      {new Date(tx.created_at).toLocaleDateString(undefined, {
+                      {new Date(tx.created_at).toLocaleString(undefined, {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
                       })}
                     </td>
 

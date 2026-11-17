@@ -410,9 +410,11 @@ export const DashboardPage: React.FC = () => {
                       )}
 
                       <td className="py-3.5 px-4 sm:px-6 text-foreground-subtle font-mono text-[11px]">
-                        {new Date(b.created_at).toLocaleDateString(undefined, {
+                        {new Date(b.created_at).toLocaleString(undefined, {
                           month: 'short',
                           day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
                         })}
                       </td>
 

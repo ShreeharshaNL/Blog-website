@@ -88,7 +88,7 @@ export const NotificationDropdown: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-background-surface border border-border shadow-2xl z-50 overflow-hidden animate-slide-up">
+        <div className="fixed sm:absolute top-16 sm:top-auto left-2 right-2 sm:left-auto sm:right-0 mt-2 max-w-[calc(100vw-1rem)] sm:w-96 mx-auto sm:mx-0 rounded-2xl bg-background-surface border border-border shadow-2xl z-50 overflow-hidden animate-slide-up">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background-elevated/50">
             <h3 className="font-semibold text-sm">Notifications</h3>
             {unreadNotifications > 0 && (
@@ -133,9 +133,11 @@ export const NotificationDropdown: React.FC = () => {
                     </div>
                     <p className="text-xs text-foreground-muted mt-0.5 line-clamp-2">{notif.message}</p>
                     <span className="text-[10px] text-foreground-subtle mt-1 block">
-                      {new Date(notif.created_at).toLocaleDateString(undefined, {
+                      {new Date(notif.created_at).toLocaleString(undefined, {
                         month: 'short',
                         day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
                       })}
                     </span>
                   </div>

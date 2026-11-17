@@ -51,6 +51,9 @@ export const App: React.FC = () => {
                 <Route path="/write" element={<WritePage />} />
                 <Route path="/write/:id" element={<WritePage />} />
                 <Route path="/@:username" element={<ProfilePage />} />
+                <Route path="/profile/:username" element={<ProfilePage />} />
+                <Route path="/u/:username" element={<ProfilePage />} />
+                <Route path="/author/:username" element={<ProfilePage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/dashboard/points" element={<PointsHistoryPage />} />
                 <Route path="/admin" element={<AdminPage />} />

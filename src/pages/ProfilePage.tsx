@@ -160,17 +160,17 @@ export const ProfilePage: React.FC = () => {
       {/* Profile Header Banner Card */}
       <div className="rounded-3xl border border-border bg-background-surface overflow-hidden shadow-xl p-6 sm:p-10 relative">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="flex items-center gap-5">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 text-center sm:text-left w-full sm:w-auto">
             <img
               src={
                 profile.avatar_url ||
                 `https://api.dicebear.com/7.x/identicon/svg?seed=${profile.username}`
               }
               alt={profile.display_name}
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-background-elevated shadow-lg"
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-background-elevated shadow-lg shrink-0"
             />
             <div>
-              <div className="flex items-center gap-3 mb-1">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-1">
                 <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                   {profile.display_name}
                 </h1>
@@ -180,7 +180,7 @@ export const ProfilePage: React.FC = () => {
               <p className="text-xs text-foreground-muted max-w-lg leading-relaxed">
                 {profile.bio || 'Independent author sharing thoughtful writing on INKVERSE.'}
               </p>
-              <div className="flex items-center gap-2 mt-3 text-xs text-foreground-subtle font-mono">
+              <div className="flex items-center justify-center sm:justify-start gap-2 mt-3 text-xs text-foreground-subtle font-mono">
                 <Calendar className="w-3.5 h-3.5" />
                 <span>Joined {new Date(profile.created_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}</span>
               </div>
@@ -371,10 +371,10 @@ export const ProfilePage: React.FC = () => {
                   />
                 </div>
                 <input
-                  type="url"
+                  type="text"
                   value={avatarUrl}
                   onChange={(e) => setAvatarUrl(e.target.value)}
-                  placeholder="Or paste avatar URL (e.g. https://...)"
+                  placeholder="Or paste image URL (e.g. https://... or /api/media/...)"
                   className="w-full text-xs p-2.5 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-orange-500"
                 />
               </div>

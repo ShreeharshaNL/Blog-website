@@ -205,11 +205,11 @@ export const OnboardingPage: React.FC = () => {
               />
             </div>
             <input
-              type="url"
+              type="text"
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}
               className="w-full text-xs p-3 rounded-xl border border-border bg-background-elevated text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
-              placeholder="Or paste image URL (e.g. https://...)"
+              placeholder="Or paste image URL (e.g. https://... or /api/media/...)"
             />
           </div>
 

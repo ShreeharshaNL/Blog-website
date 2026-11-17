@@ -287,10 +287,12 @@ export const BlogDetailPage: React.FC = () => {
                     <Calendar className="w-3 h-3" />
                     <span>
                       {blog.published_at
-                        ? new Date(blog.published_at).toLocaleDateString(undefined, {
+                        ? new Date(blog.published_at).toLocaleString(undefined, {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
                           })
                         : 'Draft'}
                     </span>
@@ -384,16 +386,16 @@ export const BlogDetailPage: React.FC = () => {
                 {/* Like Button */}
                 <button
                   onClick={() => handleReaction('like')}
-                  className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all shrink-0 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all shrink-0 cursor-pointer ${
                     userReaction === 'like'
-                      ? 'bg-rose-500/10 text-rose-400 border-rose-500/40 shadow-sm shadow-rose-950/20'
+                      ? 'bg-rose-500 text-white border-rose-600 shadow-md shadow-rose-500/30'
                       : 'border-border hover:bg-background-elevated text-foreground-muted hover:text-foreground'
                   }`}
-                  title="Like story"
+                  title={userReaction === 'like' ? 'Liked story' : 'Like story'}
                 >
                   <Heart
-                    className={`w-4 h-4 ${
-                      userReaction === 'like' ? 'fill-rose-400 text-rose-400' : ''
+                    className={`w-4 h-4 transition-transform ${
+                      userReaction === 'like' ? 'fill-white text-white scale-110' : ''
                     }`}
                   />
                   <span className="font-mono">{likeCount}</span>

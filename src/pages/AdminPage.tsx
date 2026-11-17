@@ -457,8 +457,9 @@ export const AdminPage: React.FC = () => {
           </div>
 
           <div className="rounded-2xl border border-border bg-background-surface overflow-hidden shadow-sm">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-background-elevated/70 border-b border-border text-foreground-subtle uppercase tracking-wider font-semibold">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[620px] text-left text-xs">
+                <thead className="bg-background-elevated/70 border-b border-border text-foreground-subtle uppercase tracking-wider font-semibold">
                 <tr>
                   <th className="py-3 px-4 sm:px-6">User</th>
                   <th className="py-3 px-4 sm:px-6">Role</th>
@@ -526,6 +527,7 @@ export const AdminPage: React.FC = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       )}
@@ -557,7 +559,7 @@ export const AdminPage: React.FC = () => {
                     </p>
                   )}
                   <p className="text-xs font-mono text-foreground-subtle">Target ID: {rep.target_id}</p>
-                  <div className="flex items-center gap-2 pt-2 border-t border-border/60 justify-end">
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border/60 justify-end">
                     <button
                       onClick={() => handleResolveReport(rep.id, 'dismissed')}
                       className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-background-elevated hover:bg-background-subtle text-foreground"
@@ -699,8 +701,9 @@ export const AdminPage: React.FC = () => {
         <div className="space-y-4 animate-fade-in">
           <h2 className="font-serif text-2xl font-bold">Administrative Audit Trail</h2>
           <div className="rounded-2xl border border-border bg-background-surface overflow-hidden shadow-sm">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-background-elevated/70 border-b border-border text-foreground-subtle uppercase tracking-wider font-semibold">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[620px] text-left text-xs">
+                <thead className="bg-background-elevated/70 border-b border-border text-foreground-subtle uppercase tracking-wider font-semibold">
                 <tr>
                   <th className="py-3 px-4 sm:px-6">Action</th>
                   <th className="py-3 px-4 sm:px-6">Admin</th>
@@ -723,6 +726,7 @@ export const AdminPage: React.FC = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       )}

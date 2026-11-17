@@ -727,10 +727,10 @@ export const WritePage: React.FC = () => {
                   <div className="flex items-center gap-2 p-2 rounded-xl border border-border bg-background-elevated animate-fade-in">
                     <ImageIcon className="w-3.5 h-3.5 text-foreground-muted shrink-0" />
                     <input
-                      type="url"
+                      type="text"
                       value={coverImage}
                       onChange={(e) => setCoverImage(e.target.value)}
-                      placeholder="Or paste external image URL..."
+                      placeholder="Or paste image URL (e.g. https://... or /api/media/...)"
                       className="w-full text-xs bg-transparent text-foreground placeholder:text-foreground-subtle focus:outline-none"
                     />
                   </div>
@@ -767,7 +767,13 @@ export const WritePage: React.FC = () => {
       <div className="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-background-surface/95 backdrop-blur-lg border-t border-border z-40 flex items-center gap-2 shadow-2xl">
         <button
           type="button"
-          onClick={() => setShowSettings(!showSettings)}
+          onClick={() => {
+            const next = !showSettings;
+            setShowSettings(next);
+            if (next) {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
           className={`p-2.5 rounded-xl border transition-colors shrink-0 ${
             showSettings
               ? 'bg-primary text-white border-primary'

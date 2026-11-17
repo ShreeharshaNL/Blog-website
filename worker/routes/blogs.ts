@@ -104,7 +104,32 @@ blogsApp.get('/', async (c) => {
     c.env.DB.prepare(countQuery).bind(...params).first<{ total: number }>(),
   ]);
 
-  const blogs = (itemsResult.results || []).map(b => ({
+  const currentUser = c.get('user');
+  let userReactions: Record<string, 'like' | 'dislike'> = {};
+  let userBookmarks: Record<string, boolean> = {};
+
+  const blogList = itemsResult.results || [];
+  if (currentUser && blogList.length > 0) {
+    const blogIds = blogList.map(b => b.id);
+    const placeholders = blogIds.map(() => '?').join(',');
+    const [reactionsRes, bookmarksRes] = await Promise.all([
+      c.env.DB.prepare(
+        `SELECT blog_id, type FROM reactions WHERE user_id = ? AND blog_id IN (${placeholders})`
+      ).bind(currentUser.id, ...blogIds).all<{ blog_id: string; type: 'like' | 'dislike' }>(),
+      c.env.DB.prepare(
+        `SELECT blog_id FROM bookmarks WHERE user_id = ? AND blog_id IN (${placeholders})`
+      ).bind(currentUser.id, ...blogIds).all<{ blog_id: string }>(),
+    ]);
+
+    for (const r of reactionsRes.results || []) {
+      userReactions[r.blog_id] = r.type;
+    }
+    for (const bm of bookmarksRes.results || []) {
+      userBookmarks[bm.blog_id] = true;
+    }
+  }
+
+  const blogs = blogList.map(b => ({
     id: b.id,
     title: b.title,
     slug: b.slug,
@@ -116,6 +141,8 @@ blogsApp.get('/', async (c) => {
     view_count: b.view_count,
     like_count: b.like_count,
     comment_count: b.comment_count || 0,
+    user_reaction: userReactions[b.id] || null,
+    is_bookmarked: Boolean(userBookmarks[b.id]),
     is_editor_pick: Boolean(b.is_editor_pick),
     is_featured: Boolean(b.is_featured),
     author: {

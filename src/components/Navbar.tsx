@@ -7,7 +7,6 @@ import {
   Grid,
   Bookmark,
   LayoutDashboard,
-  Shield,
   LogOut,
   User as UserIcon,
   Menu,
@@ -170,15 +169,6 @@ export const Navbar: React.FC = () => {
                         <span>Points &amp; Rewards Ledger</span>
                       </Link>
 
-                      <Link
-                        to="/admin"
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-foreground-muted hover:text-primary hover:bg-background-elevated transition-colors"
-                      >
-                        <Shield className="w-4 h-4 text-primary" />
-                        <span>Admin Panel</span>
-                      </Link>
-
                       <div className="border-t border-border mt-1 pt-1">
                         <button
                           onClick={() => {
@@ -269,25 +259,7 @@ export const Navbar: React.FC = () => {
                   <LayoutDashboard className="w-4 h-4 text-orange-500 dark:text-orange-400" />
                   <span>Author Dashboard</span>
                 </Link>
-                <Link
-                  to="/admin"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-background-elevated text-primary"
-                >
-                  <Shield className="w-4 h-4" />
-                  <span>Admin Panel</span>
-                </Link>
               </>
-            )}
-            {!user && (
-              <Link
-                to="/admin"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-background-elevated text-foreground-muted"
-              >
-                <Shield className="w-4 h-4 text-primary" />
-                <span>Admin Portal</span>
-              </Link>
             )}
           </div>
         )}

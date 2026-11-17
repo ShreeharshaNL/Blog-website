@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, MessageSquare, Bookmark, Share2, Eye, Clock, Award } from 'lucide-react';
 import { Blog } from '../types';
@@ -20,10 +20,19 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
   const [isLiking, setIsLiking] = useState(false);
   const [isBookmarking, setIsBookmarking] = useState(false);
 
+  useEffect(() => {
+    setLikes(blog.like_count || 0);
+    setIsLiked(blog.user_reaction === 'like');
+    setIsBookmarked(Boolean(blog.is_bookmarked));
+  }, [blog.like_count, blog.user_reaction, blog.is_bookmarked]);
+
   const timeDisplay = blog.published_at
-    ? new Date(blog.published_at).toLocaleDateString(undefined, {
+    ? new Date(blog.published_at).toLocaleString(undefined, {
         month: 'short',
         day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
       })
     : 'Recent';
 
@@ -47,10 +56,17 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
     setIsLiking(true);
 
     try {
-      await apiRequest(`/api/blogs/${blog.id}/reaction`, {
-        method: 'POST',
-        body: JSON.stringify({ type: 'like' }),
-      });
+      const res = await apiRequest<{ success: boolean; user_reaction: 'like' | 'dislike' | null; like_count: number }>(
+        `/api/blogs/${blog.id}/reaction`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ type: 'like' }),
+        }
+      );
+      if (res) {
+        setIsLiked(res.user_reaction === 'like');
+        setLikes(res.like_count);
+      }
     } catch (err) {
       setIsLiked(previousLiked);
       setLikes(previousLikes);
@@ -164,13 +180,19 @@ export const FeedCard: React.FC<FeedCardProps> = ({ blog, onRequireAuth }) => {
               {/* Like */}
               <button
                 onClick={handleLike}
-                className={`flex items-center gap-1.5 py-1 px-1.5 rounded transition-colors ${
-                  isLiked ? 'text-primary font-semibold' : 'hover:text-foreground'
+                className={`flex items-center gap-1.5 py-1 px-2 rounded-lg transition-all ${
+                  isLiked
+                    ? 'text-rose-500 font-bold bg-rose-500/10'
+                    : 'text-foreground-muted hover:text-foreground hover:bg-background-elevated'
                 }`}
-                title="Like story"
+                title={isLiked ? 'Liked story' : 'Like story'}
               >
-                <Heart className={`w-4 h-4 ${isLiked ? 'fill-primary text-primary' : ''}`} />
-                <span className="font-mono text-xs">{likes}</span>
+                <Heart
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    isLiked ? 'fill-rose-500 text-rose-500 scale-110' : 'text-foreground-subtle'
+                  }`}
+                />
+                <span className={`font-mono text-xs ${isLiked ? 'text-rose-500 font-bold' : ''}`}>{likes}</span>
               </button>
 
               {/* Comments */}

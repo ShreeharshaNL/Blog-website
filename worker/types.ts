@@ -2,6 +2,7 @@ import { UserRole, UserStatus } from '../src/types';
 
 export interface Env {
   DB: D1Database;
+  ASSETS?: Fetcher;
   MEDIA_BUCKET?: R2Bucket;
   KV?: KVNamespace;
   ENVIRONMENT?: string;

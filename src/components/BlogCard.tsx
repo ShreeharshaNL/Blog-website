@@ -18,10 +18,12 @@ export const BlogCard: React.FC<BlogCardProps> = ({
   isBookmarked = false,
 }) => {
   const publishedDate = blog.published_at
-    ? new Date(blog.published_at).toLocaleDateString(undefined, {
+    ? new Date(blog.published_at).toLocaleString(undefined, {
         month: 'short',
         day: 'numeric',
         year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
       })
     : 'Draft';
 
