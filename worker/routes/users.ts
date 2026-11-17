@@ -6,7 +6,13 @@ const usersApp = new Hono<{ Bindings: Env; Variables: HonoVariables }>();
 
 function cleanUsername(raw: string | undefined): string {
   if (!raw) return '';
-  return (raw.startsWith('@') ? raw.slice(1) : raw).toLowerCase();
+  let decoded = raw;
+  try {
+    decoded = decodeURIComponent(raw);
+  } catch {
+    decoded = raw;
+  }
+  return decoded.replace(/^(%40|@)+/i, '').trim().toLowerCase();
 }
 
 async function handleUserProfile(c: Context<{ Bindings: Env; Variables: HonoVariables }>) {

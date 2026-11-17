@@ -23,7 +23,11 @@ import { LoginModal } from '../components/LoginModal';
 
 export const ProfilePage: React.FC = () => {
   const { username: rawUsername } = useParams<{ username: string }>();
-  const username = rawUsername?.replace(/^@/, '') || '';
+  let resolvedUsername = rawUsername || '';
+  try {
+    resolvedUsername = decodeURIComponent(resolvedUsername);
+  } catch {}
+  const username = resolvedUsername.replace(/^(%40|@)+/i, '').trim();
   const { user: currentUser } = useAuth();
 
   const [profile, setProfile] = useState<PublicUser | null>(null);
@@ -78,7 +82,11 @@ export const ProfilePage: React.FC = () => {
       }
     }
 
-    if (username) loadProfile();
+    if (username) {
+      loadProfile();
+    } else {
+      setIsLoading(false);
+    }
   }, [username]);
 
   const handleFollowToggle = async () => {

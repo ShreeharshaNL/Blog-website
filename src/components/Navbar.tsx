@@ -259,6 +259,43 @@ export const Navbar: React.FC = () => {
                   <LayoutDashboard className="w-4 h-4 text-orange-500 dark:text-orange-400" />
                   <span>Author Dashboard</span>
                 </Link>
+                <Link
+                  to={`/@${user.username}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-background-elevated"
+                >
+                  <UserIcon className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <span>My Public Profile</span>
+                </Link>
+                <Link
+                  to="/bookmarks"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-background-elevated"
+                >
+                  <Bookmark className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
+                  <span>Saved Bookmarks</span>
+                </Link>
+                <Link
+                  to="/dashboard/points"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium hover:bg-background-elevated"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                  <span>Points &amp; Rewards Ledger</span>
+                </Link>
+                <div className="border-t border-border pt-1">
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      logout();
+                      navigate('/');
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-950/20 text-left cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
               </>
             )}
           </div>
